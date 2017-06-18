@@ -22,7 +22,7 @@ int main(void)
   jugador_tipus jugadors[2];
   record_tipus records[MAX_RECORDS];
 
-  srand(time(NULL));
+  srand((unsigned)time(NULL));
 
   /** Inici Algorisme */
 

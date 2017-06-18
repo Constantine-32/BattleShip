@@ -8,8 +8,8 @@
 |   Descripcio del Programa:   Tipus i constants del projecte.
 | ----------------------------------------------------------------*/
 
-#ifndef TIPUS_H_INCLUDED
-#define TIPUS_H_INCLUDED
+#ifndef BATTLESHIP_TIPUS_H
+#define BATTLESHIP_TIPUS_H
 
 /* Incloure E/S i llibreries estandard */
 #include <time.h>
@@ -29,26 +29,26 @@
 
 enum orientacio
 {
-  HORITZONTAL = 0,
-  VERTICAL = 1
+    HORITZONTAL = 0,
+    VERTICAL = 1
 };
 
 enum casella
 {
-  CASELLA_BUIDA = '?',
-  CASELLA_AIGUA = '.',
-  CASELLA_VAIXELL = '@',
-  CASELLA_VAIXELL_TOCAT = 'X',
-  CASELLA_AIGUA_TOCADA = '-'
+    CASELLA_BUIDA = '?',
+    CASELLA_AIGUA = '.',
+    CASELLA_VAIXELL = '@',
+    CASELLA_VAIXELL_TOCAT = 'X',
+    CASELLA_AIGUA_TOCADA = '-'
 };
 
 enum tret
 {
-  ERROR = -1,
-  REPETIT = 0,
-  AIGUA = 1,
-  TOCAT = 2,
-  ENFONSAT = 3
+    ERROR = -1,
+    REPETIT = 0,
+    AIGUA = 1,
+    TOCAT = 2,
+    ENFONSAT = 3
 };
 
 
@@ -60,8 +60,8 @@ typedef char nom_tipus[MAX_NOM];
 
 typedef struct
 {
-  nom_tipus nom;
-  int punts;
+    nom_tipus nom;
+    int punts;
 
 } record_tipus;
 
@@ -70,21 +70,21 @@ typedef struct
   ------------------------------------------------------- */
 typedef struct
 {
-  char lletra;
-  int nombre;
+    char lletra;
+    int nombre;
 
 } coor_tipus;
 
 typedef struct
 {
-  nom_tipus nom;
-  coor_tipus coor;
-  char vaixells[DIM_MAX][DIM_MAX], llancaments[DIM_MAX][DIM_MAX];
-  int vaixells_enfonsats;
-  int sum_resultats;
-  int num_trets;
-  int resultat;
+    nom_tipus nom;
+    coor_tipus coor;
+    char vaixells[DIM_MAX][DIM_MAX], llancaments[DIM_MAX][DIM_MAX];
+    int vaixells_enfonsats;
+    int sum_resultats;
+    int num_trets;
+    int resultat;
 
 } jugador_tipus;
 
-#endif /* TIPUS_H_INCLUDED */
+#endif //BATTLESHIP_TIPUS_H
