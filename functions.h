@@ -4,14 +4,15 @@
 |   Date: July 2017                 Version: 2.0
 |-----------------------------------------------------------------|
 |	Project name: BattleShip
-|	Name: main.c
-|   File description:   Main.
+|	Name: functions.h
+|   File description:   Function header.
 | ----------------------------------------------------------------*/
 
-#include "types.h"
-#include "functions.h"
+#ifndef BATTLESHIP_FUNCIONS_H
+#define BATTLESHIP_FUNCIONS_H
 
-int main() {
-  sayhello();
-  return 0;
-}
+#include "types.h"
+
+void sayhello();
+
+#endif //BATTLESHIP_FUNCIONS_H

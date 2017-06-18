@@ -4,14 +4,13 @@
 |   Date: July 2017                 Version: 2.0
 |-----------------------------------------------------------------|
 |	Project name: BattleShip
-|	Name: main.c
-|   File description:   Main.
+|	Name: functions.c
+|   File description:   Function implementation.
 | ----------------------------------------------------------------*/
 
 #include "types.h"
 #include "functions.h"
 
-int main() {
-  sayhello();
-  return 0;
+void sayhello() {
+  printf("Hello World.");
 }
