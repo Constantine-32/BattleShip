@@ -58,6 +58,11 @@ typedef struct {
 } record_t;
 
 typedef struct {
+  int num_records;
+  record_t record[MAX_RECORDS];
+} records_t;
+
+typedef struct {
   char col;
   int row;
 } coord_t;
@@ -68,8 +73,8 @@ typedef struct {
   char ships[DIM_MAX][DIM_MAX];
   char shots[DIM_MAX][DIM_MAX];
   int sunk_ships;
-  int result_sum;
   int shot_count;
+  int result_sum;
   int result;
 } player_t;
 
