@@ -20,62 +20,72 @@
 
 /* Project constants */
 #define DIM_MAX         10
-#define DIM_MIN         8
-#define MAX_NAME        10
-#define MAX_RECORDS     25
+#define NAME_MAX        10
+#define SCORE_MAX       25
 
-#define FITXER_RECORDS  "records.txt"
-#define FITXER_JOC      "partida.bin"
+#define GAME_FILE      "game.bin"
+#define SCORE_FILE     "scores.txt"
 
 /* Enums */
-enum orientation {
+typedef enum {
   HORIZONTAL = 0,
   VERTICAL = 1
-};
+} Orientation_e;
 
-enum cell {
-  CELL_EMPTY = '?',
+typedef enum {
+  CELL_UNKNOWN = '?',
   CELL_WATER = '.',
   CELL_WATER_HIT = '-',
   CELL_SHIP = '@',
   CELL_SHIP_HIT = 'X'
-};
+} Cell_e;
 
-enum shoot {
+typedef enum {
   ERROR = -1,
   REPEATED = 0,
   WATER = 1,
   HIT = 2,
   SUNK = 3
-};
+} Shoot_e;
 
 /* Types */
-typedef char name_t[MAX_NAME];
+typedef char Name_t[NAME_MAX];
 
 typedef struct {
-  name_t name;
+  Name_t name;
   int points;
-} record_t;
+} Score_t;
 
 typedef struct {
-  int num_records;
-  record_t record[MAX_RECORDS];
-} records_t;
+  Score_t score[SCORE_MAX];
+  int num;
+} Scores_t;
 
 typedef struct {
   char col;
   int row;
-} coord_t;
+} Coord_t;
 
 typedef struct {
-  name_t name;
-  coord_t coord;
-  char ships[DIM_MAX][DIM_MAX];
-  char shots[DIM_MAX][DIM_MAX];
+  Cell_e grid[DIM_MAX][DIM_MAX];
+  int dim;
+} Table_t;
+
+typedef struct {
+  Name_t name;
+  Coord_t coord;
+  Table_t ships;
+  Table_t shots;
   int sunk_ships;
   int shot_count;
   int result_sum;
   int result;
-} player_t;
+} Player_t;
+
+typedef struct {
+  Player_t player1;
+  Player_t player2;
+  int mode;
+} Game_t;
 
 #endif //BATTLESHIP_TIPUS_H

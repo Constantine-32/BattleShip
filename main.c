@@ -16,35 +16,33 @@ int main() {
   srand((unsigned)time(NULL));
   system("color 1f");
 
-  player_t players[2];
-  records_t records;
-  records.num_records = 0;
-
-  int dim = 8;
-  int mode = 0;
+  Game_t game;
+  Scores_t scores;
 
   bool exit = false;
-  bool game = false;
+  bool isGame = false;
+
+  if (!load_scores(&scores)) {
+    scores.num = 0;
+  }
 
   while (!exit) {
-    switch (main_menu(game)) {
+    switch (main_menu(isGame)) {
     case 1:
-      new_game(&dim, &mode, players);
-      game = true;
+      new_game(&game);
+      isGame = true;
       break;
     case 2:
-      load_game();
-      game = true;
+      isGame = load_game(&game);
       break;
     case 3:
-      play_game(dim, mode, players);
-      game = false;
+      isGame = play_game(&game);
       break;
     case 4:
-      save_game();
+      save_game(game);
       break;
     case 5:
-      scoreboard(records);
+      scoreboard(scores);
       break;
     case 6:
       exit = true;
