@@ -19,27 +19,32 @@ int main() {
   Game_t game;
   Scores_t scores;
 
+  game.game = false;
   bool exit = false;
-  bool isGame = false;
 
   if (!load_scores(&scores)) {
     scores.num = 0;
   }
 
   while (!exit) {
-    switch (main_menu(isGame)) {
+    switch (main_menu(game.game)) {
     case 1:
       new_game(&game);
-      isGame = true;
       break;
     case 2:
-      isGame = load_game(&game);
+      system("cls");
+      if (load_game(&game)) printf("\n  Game loaded!\n");
+      else printf("\n  No game was found.\n");
+      pause();
       break;
     case 3:
-      isGame = play_game(&game);
+      play_game(&game);
       break;
     case 4:
-      save_game(game);
+      system("cls");
+      if (save_game(game)) printf("\n  Game saved!\n");
+      else printf("\n  Error while saving the game.\n");
+      pause();
       break;
     case 5:
       scoreboard(scores);

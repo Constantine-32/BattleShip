@@ -26,6 +26,18 @@
 #define GAME_FILE      "game.bin"
 #define SCORE_FILE     "scores.txt"
 
+#define SHIP_1_SIZE     4
+#define SHIP_2_SIZE     3
+#define SHIP_3_SIZE     2
+#define SHIP_4_SIZE     1
+
+#define SHIP_1_COUNT    1
+#define SHIP_2_COUNT    2
+#define SHIP_3_COUNT    3
+#define SHIP_4_COUNT    4
+
+#define ITERATIONS_MAX  100
+
 /* Enums */
 typedef enum {
   HORIZONTAL = 0,
@@ -33,19 +45,19 @@ typedef enum {
 } Orientation_e;
 
 typedef enum {
-  CELL_UNKNOWN = '?',
-  CELL_WATER = '.',
-  CELL_WATER_HIT = '-',
-  CELL_SHIP = '@',
-  CELL_SHIP_HIT = 'X'
+  UNKNOWN = '?',
+  WATER = '.',
+  WATER_HIT = '-',
+  SHIP = '@',
+  SHIP_HIT = 'X'
 } Cell_e;
 
 typedef enum {
-  ERROR = -1,
-  REPEATED = 0,
-  WATER = 1,
-  HIT = 2,
-  SUNK = 3
+  ERROR,
+  REPEATED,
+  MISS,
+  HIT,
+  SUNK
 } Shoot_e;
 
 /* Types */
@@ -62,14 +74,20 @@ typedef struct {
 } Scores_t;
 
 typedef struct {
-  char col;
   int row;
+  int col;
 } Coord_t;
 
 typedef struct {
   Cell_e grid[DIM_MAX][DIM_MAX];
   int dim;
 } Table_t;
+
+typedef struct {
+  Coord_t coord;
+  Orientation_e orientation;
+  int size;
+} Ship_t;
 
 typedef struct {
   Name_t name;
@@ -86,6 +104,7 @@ typedef struct {
   Player_t player1;
   Player_t player2;
   int mode;
+  bool game;
 } Game_t;
 
 #endif //BATTLESHIP_TIPUS_H
