@@ -26,19 +26,22 @@ void scoreboard(Scores_t records);
 void pause();
 void print_shoot(Shoot_e shoot);
 
-// logic.c
+// initialization.c
 void new_game(Game_t *game);
 void new_player(int dim, Player_t *player, char *name);
-
 void new_shots_table(Table_t *table);
-bool play_game(Game_t *game);
-void scpy(char *c, char *s);
-
 void new_ships_table(Table_t *table);
+void fill_table(Table_t *table, Cell_e cell);
 bool place_ship(Table_t *table, int size);
 bool ship_fits(Table_t table, Ship_t ship);
 bool valid_coord(Coord_t coord, int dim);
-void fill_table(Table_t *table, Cell_e cell);
+void scpy(char *c, char *s);
+
+// logic.c
+bool play_game(Game_t *game, Scores_t *scores);
+Shoot_e shoot(Table_t table, Coord_t coord);
+Coord_t get_coord_from_Player(Table_t table);
+Coord_t get_coord_from_AI(Table_t table);
 
 // loadsave.c
 bool load_game(Game_t *game);

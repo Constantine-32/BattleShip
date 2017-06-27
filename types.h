@@ -35,6 +35,7 @@
 #define SHIP_2_COUNT    2
 #define SHIP_3_COUNT    3
 #define SHIP_4_COUNT    4
+#define TOTAL_SHIPS     10
 
 #define ITERATIONS_MAX  100
 

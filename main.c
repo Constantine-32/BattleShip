@@ -38,7 +38,7 @@ int main() {
       pause();
       break;
     case 3:
-      play_game(&game);
+      play_game(&game, &scores);
       break;
     case 4:
       system("cls");
