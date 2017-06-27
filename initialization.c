@@ -45,13 +45,13 @@ void new_ships_table(Table_t *table) {
     repeat = false;
     fill_table(table, WATER);
     count = 0;
-    while (!repeat && count++ < SHIP_1_COUNT) if (!place_ship(table, SHIP_1_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_1_NUMB) if (!place_ship(table, SHIP_1_SIZE)) repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_2_COUNT) if (!place_ship(table, SHIP_2_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_2_NUMB) if (!place_ship(table, SHIP_2_SIZE)) repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_3_COUNT) if (!place_ship(table, SHIP_3_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_3_NUMB) if (!place_ship(table, SHIP_3_SIZE)) repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_4_COUNT) if (!place_ship(table, SHIP_4_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_4_NUMB) if (!place_ship(table, SHIP_4_SIZE)) repeat = true;
   }
 }
 

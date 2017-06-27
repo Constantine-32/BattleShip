@@ -24,7 +24,7 @@ void print_table(Table_t table);
 void print_tables(Table_t table1, Table_t table2);
 void scoreboard(Scores_t records);
 void pause();
-void print_shoot(Shoot_e shoot);
+void print_shoot(Shot_e shoot);
 
 // initialization.c
 void new_game(Game_t *game);
@@ -39,7 +39,7 @@ void scpy(char *c, char *s);
 
 // logic.c
 bool play_game(Game_t *game, Scores_t *scores);
-Shoot_e shoot(Table_t table, Coord_t coord);
+Shot_e shoot(Table_t table, Coord_t coord);
 Coord_t get_coord_from_Player(Table_t table);
 Coord_t get_coord_from_AI(Table_t table);
 

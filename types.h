@@ -31,12 +31,12 @@
 #define SHIP_3_SIZE     2
 #define SHIP_4_SIZE     1
 
-#define SHIP_1_COUNT    1
-#define SHIP_2_COUNT    2
-#define SHIP_3_COUNT    3
-#define SHIP_4_COUNT    4
-#define TOTAL_SHIPS     10
+#define SHIP_1_NUMB     1
+#define SHIP_2_NUMB     2
+#define SHIP_3_NUMB     3
+#define SHIP_4_NUMB     4
 
+#define TOTAL_SHIPS     (SHIP_1_NUMB + SHIP_2_NUMB + SHIP_3_NUMB + SHIP_4_NUMB)
 #define ITERATIONS_MAX  100
 
 /* Enums */
@@ -59,7 +59,7 @@ typedef enum {
   MISS,
   HIT,
   SUNK
-} Shoot_e;
+} Shot_e;
 
 /* Types */
 typedef char Name_t[NAME_MAX];

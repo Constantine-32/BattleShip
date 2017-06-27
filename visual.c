@@ -165,7 +165,7 @@ void pause() {
   getchar();
 }
 
-void print_shoot(Shoot_e shoot) {
+void print_shoot(Shot_e shoot) {
   switch (shoot) {
   case ERROR:
     printf("Error");

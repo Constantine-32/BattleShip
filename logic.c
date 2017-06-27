@@ -18,19 +18,18 @@ bool play_game(Game_t *game, Scores_t *scores) {
   get_coord_from_Player(game->player1.shots);
   pause();
 
-//  while (game->player1.sunk_ships < TOTAL_SHIPS) {
-//    Shoot_e result = shoot(game->player2.shots, game->player2.coord);
-//  }
+  while (game->player1.sunk_ships < TOTAL_SHIPS) {
+    Shot_e result = shoot(game->player2.shots, game->player2.coord);
+  }
 
   return false;
 }
 
-Shoot_e shoot(Table_t table, Coord_t coord) {
+Shot_e shoot(Table_t table, Coord_t coord) {
 
 }
 
 Coord_t get_coord_from_Player(Table_t table) {
-  Coord_t coord;
   char col;
   int row;
   printf("  Column [A-%c] Row [1-%d]: ", table.dim + 64, table.dim);
@@ -38,6 +37,10 @@ Coord_t get_coord_from_Player(Table_t table) {
     printf("  Invalid coord, try again: ");
     while (getchar()!='\n');
   }
+  while (getchar()!='\n');
+  Coord_t coord;
+  coord.row = row - 1;
+  coord.col = col - 1 - 64;
   return coord;
 }
 
