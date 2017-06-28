@@ -12,12 +12,18 @@
 #include "functions.h"
 
 void new_game(Game_t *game) {
-  game->mode = get_mode();
-  int dim = get_dim();
-  new_player(dim, &game->player1, "Player1");
-  new_player(dim, &game->player2, "Plater2");
-//  int ini = get_ini();
   game->game = true;
+  game->mode = mode_menu();
+  int dim = size_menu();
+  if (game->mode == 0) {
+    new_player(dim, &game->player1, "A.I");
+  }
+  if (game->mode == 1 || game->mode == 2) {
+    new_player(dim, &game->player1, "Player");
+  }
+  if (game->mode == 2) {
+    new_player(dim, &game->player2, "A.I.");
+  }
 }
 
 void new_player(int dim, Player_t *player, char *name) {
@@ -31,7 +37,7 @@ void new_player(int dim, Player_t *player, char *name) {
   player->sunk_ships = 0;
   player->shot_count = 0;
   player->result_sum = 0;
-  player->result = 0;
+  player->result = ERROR;
 }
 
 void new_shots_table(Table_t *table) {
