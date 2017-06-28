@@ -54,7 +54,7 @@ typedef enum {
 } Cell_e;
 
 typedef enum {
-  ERROR,
+  ERROR = -1,
   REPEATED,
   MISS,
   HIT,
@@ -95,10 +95,10 @@ typedef struct {
   Coord_t coord;
   Table_t ships;
   Table_t shots;
+  Shot_e result;
   int sunk_ships;
   int shot_count;
   int result_sum;
-  int result;
 } Player_t;
 
 typedef struct {
