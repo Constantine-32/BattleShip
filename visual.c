@@ -14,20 +14,6 @@
 int main_menu(bool game) {
   int option;
   system("cls");
-  show_menu(game);
-  printf("  Select an option: ");
-  while (scanf("%d", &option) != 1 || !valid_option(game, option)) {
-    while (getchar() != '\n');
-    system("cls");
-    show_menu(game);
-    printf("  Invalid option, try again: ");
-  }
-  while (getchar() != '\n');
-  if (!game && option > 2) option += 2;
-  return option;
-}
-
-void show_menu(bool game) {
   printf("\n  BattleShip Game: Main menu\n");
   printf("  1. New game\n");
   printf("  2. Load game\n");
@@ -40,13 +26,30 @@ void show_menu(bool game) {
     printf("  3. Scoreboard\n");
     printf("  4. Exit\n");
   }
+  printf("  Select an option: ");
+  while (scanf("%d", &option) != 1 || option < 1 || (game && option > 6) || (!game && option > 4)) {
+    while (getchar() != '\n');
+    system("cls");
+    printf("\n  BattleShip Game: Main menu\n");
+    printf("  1. New game\n");
+    printf("  2. Load game\n");
+    if (game) {
+      printf("  3. Play game\n");
+      printf("  4. Save game\n");
+      printf("  5. Scoreboard\n");
+      printf("  6. Exit\n");
+    } else {
+      printf("  3. Scoreboard\n");
+      printf("  4. Exit\n");
+    }
+    printf("  Invalid option, try again: ");
+  }
+  while (getchar() != '\n');
+  if (!game && option > 2) option += 2;
+  return option;
 }
 
-bool valid_option(bool game, int option) {
-  return option > 0 && ((game && option < 7) || (!game && option < 5));
-}
-
-int get_mode() {
+int mode_menu() {
   int option;
   system("cls");
   printf("\n  Select the game mode:\n");
@@ -67,7 +70,7 @@ int get_mode() {
   return option - 1;
 }
 
-int get_dim() {
+int size_menu() {
   int option;
   system("cls");
   printf("\n  Select the table size:\n");
@@ -88,7 +91,7 @@ int get_dim() {
   return option + 7;
 }
 
-int get_ini() {
+int init_menu() {
   int option;
   system("cls");
   printf("\n  How do you want to initialize your ships table?:\n");
@@ -117,10 +120,10 @@ void print_table(Table_t table) {
   for (row = 0; row < table.dim; row++) {
     printf("\n  %2d ", row+1);
     for (col = 0; col < table.dim; col++) {
-      printf("%c ", table.grid[col][row]);
+      printf("%c ", table.grid[row][col]);
     }
   }
-  printf("\n");
+  printf("\n\n");
 }
 
 void print_tables(Table_t table1, Table_t table2) {
@@ -138,25 +141,25 @@ void print_tables(Table_t table1, Table_t table2) {
   for (row = 0; row < table1.dim; row++) {
     printf("\n  %2d ", row+1);
     for (col = 0; col < table1.dim; col++) {
-      printf("%c ", table1.grid[col][row]);
+      printf("%c ", table1.grid[row][col]);
     }
     printf(" \t");
     printf("%2d ", row+1);
     for (col = 0; col < table2.dim; col++) {
-      printf("%c ", table2.grid[col][row]);
+      printf("%c ", table2.grid[row][col]);
     }
   }
-  printf("\n");
+  printf("\n\n");
 }
 
-void scoreboard(Scores_t records) {
+void print_scoreboard(Scores_t scores) {
   system("cls");
-  if (records.num > 0) {
+  if (scores.num > 0) {
     printf("\n  Player\t\tPoints\n\n");
-    for (int i = 0; i < records.num; i++) {
-      printf("%2d. %s\t\t%d\n", i+1, records.score[i].name, records.score[i].points);
+    for (int i = 0; i < scores.num; i++) {
+      printf("%2d. %s\t\t%d\n", i+1, scores.score[i].name, scores.score[i].points);
     }
-  } else printf("\n  There are no records to show.\n");
+  } else printf("\n  There are no scores to show.\n");
   pause();
 }
 
@@ -165,24 +168,19 @@ void pause() {
   getchar();
 }
 
-void print_shoot(Shot_e shoot) {
-  switch (shoot) {
+const char *shot_to_string(Shot_e shot) {
+  switch (shot) {
   case ERROR:
-    printf("Error");
-    break;
+    return "Error";
   case REPEATED:
-    printf("Repeated");
-    break;
+    return "Repeated";
   case MISS:
-    printf("Water");
-    break;
+    return "Water";
   case HIT:
-    printf("Hit");
-    break;
+    return "Hit";
   case SUNK:
-    printf("Sunk");
-    break;
+    return "Sunk";
   default:
-    break;
+    return "Unknown_Case";
   }
 }
