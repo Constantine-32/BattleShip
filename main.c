@@ -16,15 +16,13 @@ int main() {
   srand((unsigned)time(NULL));
   system("color 1f");
 
-  Game_t game;
   Scores_t scores;
+  scores.num = 0;
+  load_scores(&scores);
 
+  Game_t game;
   game.game = false;
   bool exit = false;
-
-  if (!load_scores(&scores)) {
-    scores.num = 0;
-  }
 
   while (!exit) {
     switch (main_menu(game.game)) {
@@ -47,7 +45,7 @@ int main() {
       pause();
       break;
     case 5:
-      scoreboard(scores);
+      print_scoreboard(scores);
       break;
     case 6:
       exit = true;
