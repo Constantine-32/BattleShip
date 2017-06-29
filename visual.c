@@ -110,11 +110,10 @@ int init_menu() {
   return option - 1;
 }
 
-void print_table(const Table_t *table) {
-  const char abc[] = "ABCDEFGHIJ";
+void print_table_1(const Table_t *table) {
   printf("\n     ");
   for (int col = 0; col < table->dim; col++) {
-    printf("%c ", abc[col]);
+    printf("%c ", col + 1 + 64);
   }
   for (int row = 0; row < table->dim; row++) {
     printf("\n  %2d ", row + 1);
@@ -125,16 +124,14 @@ void print_table(const Table_t *table) {
   printf("\n\n");
 }
 
-void print_tables(const Table_t *ships_table, const Table_t *shots_table) {
-  const char abc[] = "ABCDEFGHIJ";
-  printf("\n  Ship table\t\t\tShooting table\n\n");
-  printf("     ");
+void print_table_2(const Table_t *ships_table, const Table_t *shots_table) {
+  printf("\n     ");
   for (int col = 0; col < ships_table->dim; col++) {
-    printf("%c ", abc[col]);
+    printf("%c ", col + 1 + 64);
   }
   printf(" \t   ");
   for (int col = 0; col < shots_table->dim; col++) {
-    printf("%c ", abc[col]);
+    printf("%c ", col + 1 + 64);
   }
   for (int row = 0; row < ships_table->dim; row++) {
     printf("\n  %2d ", row + 1);
@@ -155,14 +152,14 @@ void print_scoreboard(const Scores_t *scores) {
   if (scores->num > 0) {
     printf("\n  Player\t\tPoints\n\n");
     for (int i = 0; i < scores->num; i++) {
-      printf("%2d. %s\t\t%d\n", i+1, scores->score[i].name, scores->score[i].points);
+      printf("  %2d. %s\t\t%d\n", i+1, scores->score[i].name, scores->score[i].points);
     }
   } else printf("\n  There are no scores to show.\n");
   pause();
 }
 
 void pause() {
-  printf("\n  Press enter to return to the main menu...");
+  printf("\n  Press enter to continue...");
   getchar();
 }
 

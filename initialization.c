@@ -16,7 +16,7 @@ void new_game(Game_t *game) {
   game->mode = mode_menu();
   int dim = size_menu();
   if (game->mode == 0) {
-    new_player(dim, &game->player1, "A.I");
+    new_player(dim, &game->player1, "A.I.");
   }
   if (game->mode == 1 || game->mode == 2) {
     new_player(dim, &game->player1, "Player");
@@ -98,7 +98,7 @@ bool ship_fits(const Table_t *table, const Ship_t *ship) {
   while (pivot.row <= stop.row) {
     pivot.col = ship->coord.col - 1;
     while (pivot.col <= stop.col) {
-      if (valid_coord(pivot, table->dim) && table->grid[pivot.row][pivot.col] != WATER) {
+      if (valid_coord(&pivot, table->dim) && table->grid[pivot.row][pivot.col] != WATER) {
         return false;
       }
       pivot.col++;
@@ -108,8 +108,8 @@ bool ship_fits(const Table_t *table, const Ship_t *ship) {
   return true;
 }
 
-bool valid_coord(Coord_t coord, int dim) {
-  return coord.row >= 0 && coord.row < dim && coord.col >= 0 && coord.col < dim;
+bool valid_coord(const Coord_t *coord, int dim) {
+  return coord->row >= 0 && coord->row < dim && coord->col >= 0 && coord->col < dim;
 }
 
 void scpy(char *c, const char *s) {

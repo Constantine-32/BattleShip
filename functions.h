@@ -18,8 +18,8 @@ int main_menu(bool game);
 int mode_menu();
 int size_menu();
 int init_menu();
-void print_table(const Table_t *table);
-void print_tables(const Table_t *ships_table, const Table_t *shots_table);
+void print_table_1(const Table_t *table);
+void print_table_2(const Table_t *ships_table, const Table_t *shots_table);
 void print_scoreboard(const Scores_t *scores);
 const char *shot_to_string(Shot_e shot);
 void pause();
@@ -32,7 +32,7 @@ void new_ships_table(Table_t *table);
 void fill_table(Table_t *table, Cell_e cell);
 bool place_ship(Table_t *table, int size);
 bool ship_fits(const Table_t *table, const Ship_t *ship);
-bool valid_coord(Coord_t coord, int dim);
+bool valid_coord(const Coord_t *coord, int dim);
 void scpy(char *c, const char *s);
 
 // logic.c
@@ -50,6 +50,8 @@ bool is_ship_not_sunk(const Table_t *table, const Coord_t *coord);
 bool is_ship_horizont(const Table_t *table, const Coord_t *coord);
 bool is_ship_vertical(const Table_t *table, const Coord_t *coord);
 int get_score(const Player_t *player);
+bool add_score(Scores_t *scores, const Score_t *score);
+void sort_scores(Scores_t *scores);
 
 // loadsave.c
 bool load_game(Game_t *game);

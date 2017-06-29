@@ -49,12 +49,19 @@ bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
   game->game = false;
   remove(GAME_FILE);
 
-  int score = get_score(&game->player1);
+  Score_t score;
+  scpy(score.name, game->player1.name);
+  score.points = get_score(&game->player1);
 
   printf("\n");
   printf("  Game Over!\n");
-  printf("  Score: %d\n", score);
+  printf("  Score: %d\n", score.points);
   pause();
+
+  if (add_score(scores, &score)) {
+    save_scores(scores);
+    print_scoreboard(scores);
+  }
 
   return true;
 }
@@ -337,4 +344,24 @@ bool is_ship_vertical(const Table_t *table, const Coord_t *coord) {
 
 int get_score(const Player_t *player) {
   return (int) ((float) player->ships.dim / player->shot_count * player->result_sum * 100);
+}
+
+bool add_score(Scores_t *scores, const Score_t *score) {
+  if (scores->num < SCORE_MAX || score->points > scores->score[scores->num - 1].points) {
+    scores->score[scores->num < SCORE_MAX ? scores->num++ : scores->num - 1] = *score;
+    sort_scores(scores);
+    return true;
+  } else return false;
+}
+
+void sort_scores(Scores_t *scores) {
+  for (int i = 1; i < scores->num; i++) {
+    int j = i;
+    while (j > 0 && scores->score[j].points > scores->score[j - 1].points) {
+      Score_t aux = scores->score[j];
+      scores->score[j] = scores->score[j - 1];
+      scores->score[j - 1] = aux;
+      j--;
+    }
+  }
 }
