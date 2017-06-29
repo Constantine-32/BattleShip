@@ -26,7 +26,7 @@ void new_game(Game_t *game) {
   }
 }
 
-void new_player(int dim, Player_t *player, char *name) {
+void new_player(int dim, Player_t *player, const char *name) {
   scpy(player->name, name);
   player->coord.col = -1;
   player->coord.row = -1;
@@ -79,7 +79,7 @@ bool place_ship(Table_t *table, int size) {
     ship.orientation = (rand() % 2 == 0) ? HORIZONTAL : VERTICAL;
     ship.coord.row = rand() % (ship.orientation == HORIZONTAL ? table->dim : table->dim - (size - 1));
     ship.coord.col = rand() % (ship.orientation == VERTICAL ? table->dim : table->dim - (size - 1));
-  } while (!ship_fits(*table, ship));
+  } while (!ship_fits(table, &ship));
 
   while (size--) {
     table->grid[ship.coord.row][ship.coord.col] = SHIP;
@@ -89,16 +89,16 @@ bool place_ship(Table_t *table, int size) {
   return true;
 }
 
-bool ship_fits(Table_t table, Ship_t ship) {
+bool ship_fits(const Table_t *table, const Ship_t *ship) {
   Coord_t stop;
-  stop.row = (ship.orientation == HORIZONTAL) ? ship.coord.row + 1 : ship.coord.row + ship.size;
-  stop.col = (ship.orientation == VERTICAL) ? ship.coord.col + 1 : ship.coord.col + ship.size;
+  stop.row = (ship->orientation == HORIZONTAL) ? ship->coord.row + 1 : ship->coord.row + ship->size;
+  stop.col = (ship->orientation == VERTICAL) ? ship->coord.col + 1 : ship->coord.col + ship->size;
   Coord_t pivot;
-  pivot.row = ship.coord.row - 1;
+  pivot.row = ship->coord.row - 1;
   while (pivot.row <= stop.row) {
-    pivot.col = ship.coord.col - 1;
+    pivot.col = ship->coord.col - 1;
     while (pivot.col <= stop.col) {
-      if (valid_coord(pivot, table.dim) && table.grid[pivot.row][pivot.col] != WATER) {
+      if (valid_coord(pivot, table->dim) && table->grid[pivot.row][pivot.col] != WATER) {
         return false;
       }
       pivot.col++;
@@ -112,7 +112,7 @@ bool valid_coord(Coord_t coord, int dim) {
   return coord.row >= 0 && coord.row < dim && coord.col >= 0 && coord.col < dim;
 }
 
-void scpy(char *c, char *s) {
+void scpy(char *c, const char *s) {
   while (*s) {
     *c++ = *s++;
   }

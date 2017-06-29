@@ -40,12 +40,12 @@ int main() {
       break;
     case 4:
       system("cls");
-      if (save_game(game)) printf("\n  Game saved!\n");
+      if (save_game(&game)) printf("\n  Game saved!\n");
       else printf("\n  Error while saving the game.\n");
       pause();
       break;
     case 5:
-      print_scoreboard(scores);
+      print_scoreboard(&scores);
       break;
     case 6:
       exit = true;

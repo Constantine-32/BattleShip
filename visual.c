@@ -110,54 +110,52 @@ int init_menu() {
   return option - 1;
 }
 
-void print_table(Table_t table) {
-  int row, col;
-  char lletra[] = "ABCDEFGHIJ";
+void print_table(const Table_t *table) {
+  const char abc[] = "ABCDEFGHIJ";
   printf("\n     ");
-  for (col = 0; col < table.dim; col++) {
-    printf("%c ", lletra[col]);
+  for (int col = 0; col < table->dim; col++) {
+    printf("%c ", abc[col]);
   }
-  for (row = 0; row < table.dim; row++) {
-    printf("\n  %2d ", row+1);
-    for (col = 0; col < table.dim; col++) {
-      printf("%c ", table.grid[row][col]);
+  for (int row = 0; row < table->dim; row++) {
+    printf("\n  %2d ", row + 1);
+    for (int col = 0; col < table->dim; col++) {
+      printf("%c ", table->grid[row][col]);
     }
   }
   printf("\n\n");
 }
 
-void print_tables(Table_t table1, Table_t table2) {
-  int row, col;
-  char abc[] = "ABCDEFGHIJ";
+void print_tables(const Table_t *ships_table, const Table_t *shots_table) {
+  const char abc[] = "ABCDEFGHIJ";
   printf("\n  Ship table\t\t\tShooting table\n\n");
   printf("     ");
-  for (col = 0; col < table1.dim; col++) {
+  for (int col = 0; col < ships_table->dim; col++) {
     printf("%c ", abc[col]);
   }
   printf(" \t   ");
-  for (col = 0; col < table2.dim; col++) {
+  for (int col = 0; col < shots_table->dim; col++) {
     printf("%c ", abc[col]);
   }
-  for (row = 0; row < table1.dim; row++) {
-    printf("\n  %2d ", row+1);
-    for (col = 0; col < table1.dim; col++) {
-      printf("%c ", table1.grid[row][col]);
+  for (int row = 0; row < ships_table->dim; row++) {
+    printf("\n  %2d ", row + 1);
+    for (int col = 0; col < ships_table->dim; col++) {
+      printf("%c ", ships_table->grid[row][col]);
     }
     printf(" \t");
-    printf("%2d ", row+1);
-    for (col = 0; col < table2.dim; col++) {
-      printf("%c ", table2.grid[row][col]);
+    printf("%2d ", row + 1);
+    for (int col = 0; col < shots_table->dim; col++) {
+      printf("%c ", shots_table->grid[row][col]);
     }
   }
   printf("\n\n");
 }
 
-void print_scoreboard(Scores_t scores) {
+void print_scoreboard(const Scores_t *scores) {
   system("cls");
-  if (scores.num > 0) {
+  if (scores->num > 0) {
     printf("\n  Player\t\tPoints\n\n");
-    for (int i = 0; i < scores.num; i++) {
-      printf("%2d. %s\t\t%d\n", i+1, scores.score[i].name, scores.score[i].points);
+    for (int i = 0; i < scores->num; i++) {
+      printf("%2d. %s\t\t%d\n", i+1, scores->score[i].name, scores->score[i].points);
     }
   } else printf("\n  There are no scores to show.\n");
   pause();
