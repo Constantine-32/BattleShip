@@ -26,7 +26,7 @@ bool play_game(Game_t *game, Scores_t *scores) {
 
 bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
   system("cls");
-  print_tables(&game->player1.ships, &game->player1.shots);
+  print_table_2(&game->player1.ships, &game->player1.shots);
   pause();
 
   while (game->player1.sunk_ships < TOTAL_SHIPS) {
@@ -38,7 +38,7 @@ bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
     update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
 
     system("cls");
-    print_tables(&game->player1.ships, &game->player1.shots);
+    print_table_2(&game->player1.ships, &game->player1.shots);
     printf("  Ships left: %d\n", TOTAL_SHIPS - game->player1.sunk_ships);
     printf("  Last shot: %d-%d\n", game->player1.coord.col, game->player1.coord.row);
     printf("  Result: %s\n", shot_to_string(game->player1.result));
@@ -87,16 +87,20 @@ Shot_e shoot(Table_t *ships_table, const Coord_t *coord) {
 
 bool is_ship_sunk(const Table_t *ships_table, Coord_t coord) {
   while (coord.row - 1 >= 0 && !is_water(ships_table->grid[coord.row - 1][coord.col])) {
-    if (ships_table->grid[coord.row--][coord.col] == SHIP) return false;
+    coord.row--;
+    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
   }
   while (coord.col - 1 >= 0 && !is_water(ships_table->grid[coord.row][coord.col - 1])) {
-    if (ships_table->grid[coord.row][coord.col--] == SHIP) return false;
+    coord.col--;
+    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
   }
   while (coord.row + 1 < ships_table->dim && !is_water(ships_table->grid[coord.row + 1][coord.col])) {
-    if (ships_table->grid[coord.row++][coord.col] == SHIP) return false;
+    coord.row++;
+    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
   }
-  while (coord.row + 1 < ships_table->dim && !is_water(ships_table->grid[coord.row][coord.col + 1])) {
-    if (ships_table->grid[coord.row][coord.col++] == SHIP) return false;
+  while (coord.col + 1 < ships_table->dim && !is_water(ships_table->grid[coord.row][coord.col + 1])) {
+    coord.col++;
+    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
   }
   return true;
 }
@@ -201,10 +205,114 @@ Coord_t get_coord_from_AI(const Table_t *table) {
     }
   }
 
+  int ship_1 = SHIP_1_NUMB;
+  int ship_2 = SHIP_2_NUMB;
+  int ship_3 = SHIP_3_NUMB;
+
+  for (int row = 0; row < table->dim; row++) {
+    for (int col = 0; col < table->dim; col++) {
+      if (table->grid[row][col] == SHIP) {
+        if (row + 1 < table->dim && table->grid[row + 1][col] == SHIP) {
+          if (row + 2 < table->dim && table->grid[row + 2][col] == SHIP) {
+            if (row + 3 < table->dim && table->grid[row + 3][col] == SHIP) {
+              ship_1--;
+            } else if (row - 1 < 0 || row - 1 >= 0 && table->dim && table->grid[row - 1][col] != SHIP) {
+              ship_2--;
+            }
+          } else if (row - 1 < 0 || row - 1 >= 0 && table->dim && table->grid[row - 1][col] != SHIP) {
+            ship_3--;
+          }
+        } else if (col + 1 < table->dim && table->grid[row][col + 1] == SHIP) {
+          if (col + 2 < table->dim && table->grid[row][col + 2] == SHIP) {
+            if (col + 3 < table->dim && table->grid[row][col + 3] == SHIP) {
+              ship_1--;
+            } else if (col - 1 < 0 || col - 1 >= 0 && table->dim && table->grid[row][col - 1] != SHIP) {
+              ship_2--;
+            }
+          } else if (col - 1 < 0 || col - 1 >= 0 && table->dim && table->grid[row][col - 1] != SHIP) {
+            ship_3--;
+          }
+        }
+      }
+    }
+  }
+
+  int prob_table[table->dim][table->dim];
+
+  for (int i = 0; i < table->dim; i++) {
+    for (int j = 0; j < table->dim; j++) {
+      prob_table[i][j] = 0;
+    }
+  }
+
+  for (int i = 0; i < table->dim; i++) {
+    for (int j = 0; j < table->dim; j++) {
+      if (ship_1 > 0) {
+        if ((table->grid[i][j] == UNKNOWN) &&
+            (i + 1 < table->dim && table->grid[i + 1][j] == UNKNOWN) &&
+            (i + 2 < table->dim && table->grid[i + 2][j] == UNKNOWN) &&
+            (i + 3 < table->dim && table->grid[i + 3][j] == UNKNOWN)) {
+          prob_table[i][j]++;
+          prob_table[i + 1][j]++;
+          prob_table[i + 2][j]++;
+          prob_table[i + 3][j]++;
+        }
+        if ((table->grid[i][j] == UNKNOWN) &&
+            (j + 1 < table->dim && table->grid[i][j + 1] == UNKNOWN) &&
+            (j + 2 < table->dim && table->grid[i][j + 2] == UNKNOWN) &&
+            (j + 3 < table->dim && table->grid[i][j + 3] == UNKNOWN)) {
+          prob_table[i][j]++;
+          prob_table[i][j + 1]++;
+          prob_table[i][j + 2]++;
+          prob_table[i][j + 3]++;
+        }
+      }
+      if (ship_2 > 0) {
+        if ((table->grid[i][j] == UNKNOWN) &&
+            (i + 1 < table->dim && table->grid[i + 1][j] == UNKNOWN) &&
+            (i + 2 < table->dim && table->grid[i + 2][j] == UNKNOWN)) {
+          prob_table[i][j]++;
+          prob_table[i + 1][j]++;
+          prob_table[i + 2][j]++;
+        }
+        if ((table->grid[i][j] == UNKNOWN) &&
+            (j + 1 < table->dim && table->grid[i][j + 1] == UNKNOWN) &&
+            (j + 2 < table->dim && table->grid[i][j + 2] == UNKNOWN)) {
+          prob_table[i][j]++;
+          prob_table[i][j + 1]++;
+          prob_table[i][j + 2]++;
+        }
+      }
+      if (ship_3 > 0) {
+        if ((table->grid[i][j] == UNKNOWN) &&
+            (i + 1 < table->dim && table->grid[i + 1][j] == UNKNOWN)) {
+          prob_table[i][j]++;
+          prob_table[i + 1][j]++;
+        }
+        if ((table->grid[i][j] == UNKNOWN) &&
+            (j + 1 < table->dim && table->grid[i][j + 1] == UNKNOWN)) {
+          prob_table[i][j]++;
+          prob_table[i][j + 1]++;
+        }
+      }
+    }
+  }
+
+  int highest_prob = 0;
+
+  for (int i = 0; i < table->dim; i++) {
+    for (int j = 0; j < table->dim; j++) {
+      if (prob_table[i][j] > highest_prob) {
+        highest_prob = prob_table[i][j];
+      }
+    }
+  }
+
   do {
     coord.row = rand() % table->dim;
     coord.col = rand() % table->dim;
-  } while (table->grid[coord.row][coord.col] != UNKNOWN);
+  } while (table->grid[coord.row][coord.col] != UNKNOWN ||
+          prob_table[coord.row][coord.col] != highest_prob);
 
   return coord;
 }
