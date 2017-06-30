@@ -27,7 +27,7 @@ void new_game(Game_t *game) {
 }
 
 void new_player(int dim, Player_t *player, const char *name) {
-  scpy(player->name, name);
+  strcpy(player->name, name);
   player->coord.col = -1;
   player->coord.row = -1;
   player->ships.dim = dim;
@@ -110,11 +110,4 @@ bool ship_fits(const Table_t *table, const Ship_t *ship) {
 
 bool valid_coord(const Coord_t *coord, int dim) {
   return coord->row >= 0 && coord->row < dim && coord->col >= 0 && coord->col < dim;
-}
-
-void scpy(char *c, const char *s) {
-  while (*s) {
-    *c++ = *s++;
-  }
-  *c = '\0';
 }

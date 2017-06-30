@@ -12,6 +12,7 @@
 #define BATTLESHIP_TIPUS_H
 
 /* Standard libraries */
+#include <mem.h>
 #include <time.h>
 #include <ctype.h>
 #include <stdio.h>
