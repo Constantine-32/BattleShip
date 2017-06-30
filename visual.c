@@ -14,7 +14,7 @@
 int main_menu(bool game) {
   int option;
   system("cls");
-  printf("\n  BattleShip Game: Main menu\n");
+  printf("\n  BattleShip Game: Main menu\n\n");
   printf("  1. New game\n");
   printf("  2. Load game\n");
   if (game) {
@@ -26,11 +26,11 @@ int main_menu(bool game) {
     printf("  3. Scoreboard\n");
     printf("  4. Exit\n");
   }
-  printf("  Select an option: ");
+  printf("\n  Select an option: ");
   while (scanf("%d", &option) != 1 || option < 1 || (game && option > 6) || (!game && option > 4)) {
     while (getchar() != '\n');
     system("cls");
-    printf("\n  BattleShip Game: Main menu\n");
+    printf("\n  BattleShip Game: Main menu\n\n");
     printf("  1. New game\n");
     printf("  2. Load game\n");
     if (game) {
@@ -42,7 +42,7 @@ int main_menu(bool game) {
       printf("  3. Scoreboard\n");
       printf("  4. Exit\n");
     }
-    printf("  Invalid option, try again: ");
+    printf("\n  Invalid option, try again: ");
   }
   while (getchar() != '\n');
   if (!game && option > 2) option += 2;
@@ -52,19 +52,19 @@ int main_menu(bool game) {
 int mode_menu() {
   int option;
   system("cls");
-  printf("\n  Select the game mode:\n");
+  printf("\n  Select the game mode:\n\n");
   printf("  1. AI solo\n");
   printf("  2. Player solo\n");
   printf("  3. Player vs AI\n");
-  printf("  Select an option: ");
+  printf("\n  Select an option: ");
   while (scanf("%d", &option) != 1 || option < 1 || option > 3) {
     while (getchar() != '\n');
     system("cls");
-    printf("\n  Select the game mode:\n");
+    printf("\n  Select the game mode:\n\n");
     printf("  1. AI solo\n");
     printf("  2. Player solo\n");
     printf("  3. Player vs AI\n");
-    printf("  Invalid option, try again: ");
+    printf("\n  Invalid option, try again: ");
   }
   while (getchar() != '\n');
   return option - 1;
@@ -73,19 +73,19 @@ int mode_menu() {
 int size_menu() {
   int option;
   system("cls");
-  printf("\n  Select the table size:\n");
+  printf("\n  Select the table size:\n\n");
   printf("  1. 8x8\n");
   printf("  2. 9x9\n");
   printf("  3. 10x10\n");
-  printf("  Select an option: ");
+  printf("\n  Select an option: ");
   while (scanf("%d", &option) != 1 || option < 1 || option > 3) {
     while (getchar() != '\n');
     system("cls");
-    printf("\n  Select the table size:\n");
+    printf("\n  Select the table size:\n\n");
     printf("  1. 8x8\n");
     printf("  2. 9x9\n");
     printf("  3. 10x10\n");
-    printf("  Invalid option, try again: ");
+    printf("\n  Invalid option, try again: ");
   }
   while (getchar() != '\n');
   return option + 7;
@@ -94,20 +94,30 @@ int size_menu() {
 int init_menu() {
   int option;
   system("cls");
-  printf("\n  How do you want to initialize your ships table?:\n");
+  printf("\n  How do you want to initialize your ships table?:\n\n");
   printf("  1. Automatic\n");
   printf("  2. Manual\n");
-  printf("  Select an option: ");
+  printf("\n  Select an option: ");
   while (scanf("%d", &option) != 1 || option < 1 || option > 2) {
     while (getchar() != '\n');
     system("cls");
-    printf("\n  How do you want to initialize your ships table?:\n");
+    printf("\n  How do you want to initialize your ships table?:\n\n");
     printf("  1. Automatic\n");
     printf("  2. Manual\n");
-    printf("  Invalid option, try again: ");
+    printf("\n  Invalid option, try again: ");
   }
   while (getchar() != '\n');
   return option - 1;
+}
+
+void print_game(const Player_t *player) {
+  print_table_2(&player->ships, &player->shots);
+  printf("  Ships left: %d\n", TOTAL_SHIPS - player->sunk_ships);
+  if (player->shot_count > 0) {
+    printf("  Last shot: %c-%d\n", player->coord.col + 1 + 64, player->coord.row + 1);
+    printf("  Result: %s\n", shot_to_string(player->result));
+  }
+  printf("  Shots: %d\n", player->shot_count);
 }
 
 void print_table_1(const Table_t *table) {
@@ -161,6 +171,14 @@ void print_scoreboard(const Scores_t *scores) {
 void pause() {
   printf("\n  Press enter to continue...");
   getchar();
+}
+
+bool pause_exit() {
+  char string[6];
+  printf("\n  Press enter to continue. Type 'exit' to exit... ");
+  fgets(string, 6, stdin);
+  fflush(stdin);
+  return strcmp(string, "exit\n") != 0;
 }
 
 const char *shot_to_string(Shot_e shot) {

@@ -25,9 +25,10 @@ bool play_game(Game_t *game, Scores_t *scores) {
 }
 
 bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
+
   system("cls");
-  print_table_2(&game->player1.ships, &game->player1.shots);
-  pause();
+  print_game(&game->player1);
+  if (!pause_exit()) return false;
 
   while (game->player1.sunk_ships < TOTAL_SHIPS) {
     game->player1.coord = get_coord_from_AI(&game->player1.shots);
@@ -38,19 +39,15 @@ bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
     update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
 
     system("cls");
-    print_table_2(&game->player1.ships, &game->player1.shots);
-    printf("  Ships left: %d\n", TOTAL_SHIPS - game->player1.sunk_ships);
-    printf("  Last shot: %d-%d\n", game->player1.coord.col, game->player1.coord.row);
-    printf("  Result: %s\n", shot_to_string(game->player1.result));
-    printf("  Shots: %d\n", game->player1.shot_count);
-    pause();
+    print_game(&game->player1);
+    if (!pause_exit()) return false;
   }
 
   game->game = false;
   remove(GAME_FILE);
 
   Score_t score;
-  scpy(score.name, game->player1.name);
+  strcpy(score.name, game->player1.name);
   score.points = get_score(&game->player1);
 
   printf("\n");
@@ -67,7 +64,9 @@ bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
 }
 
 bool play_game_solo_Player(Game_t *game, Scores_t *scores) {
-  // TODO
+
+
+
   return true;
 }
 
@@ -85,29 +84,33 @@ Shot_e shoot(Table_t *ships_table, const Coord_t *coord) {
     return MISS;
   case SHIP:
     ships_table->grid[coord->row][coord->col] = SHIP_HIT;
-    if (is_ship_sunk(ships_table, *coord)) return SUNK;
+    if (is_ship_sunk(ships_table, coord)) return SUNK;
     else return HIT;
   default:
     return ERROR;
   }
 }
 
-bool is_ship_sunk(const Table_t *ships_table, Coord_t coord) {
-  while (coord.row - 1 >= 0 && !is_water(ships_table->grid[coord.row - 1][coord.col])) {
-    coord.row--;
-    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
+bool is_ship_sunk(const Table_t *ships_table, const Coord_t *coord) {
+  int add = -1;
+  while (coord->row + add >= 0 && !is_water(ships_table->grid[coord->row + add][coord->col])) {
+    if (ships_table->grid[coord->row + add][coord->col] == SHIP) return false;
+    add--;
   }
-  while (coord.col - 1 >= 0 && !is_water(ships_table->grid[coord.row][coord.col - 1])) {
-    coord.col--;
-    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
+  add = -1;
+  while (coord->col + add >= 0 && !is_water(ships_table->grid[coord->row][coord->col + add])) {
+    if (ships_table->grid[coord->row][coord->col + add] == SHIP) return false;
+    add--;
   }
-  while (coord.row + 1 < ships_table->dim && !is_water(ships_table->grid[coord.row + 1][coord.col])) {
-    coord.row++;
-    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
+  add = 1;
+  while (coord->row + add < ships_table->dim && !is_water(ships_table->grid[coord->row + add ][coord->col])) {
+    if (ships_table->grid[coord->row + add][coord->col] == SHIP) return false;
+    add++;
   }
-  while (coord.col + 1 < ships_table->dim && !is_water(ships_table->grid[coord.row][coord.col + 1])) {
-    coord.col++;
-    if (ships_table->grid[coord.row][coord.col] == SHIP) return false;
+  add = 1;
+  while (coord->col + add < ships_table->dim && !is_water(ships_table->grid[coord->row][coord->col + add ])) {
+    if (ships_table->grid[coord->row][coord->col + add] == SHIP) return false;
+    add++;
   }
   return true;
 }
@@ -166,10 +169,10 @@ void unveil_surroundings(Table_t *shots_table, const Coord_t *coord) {
     lower_right.col++;
   }
 
-  for (int i = upper_left.row; i <= lower_right.row; i++) {
-    for (int j = upper_left.col; j <= lower_right.col; j++) {
-      if (shots_table->grid[i][j] == UNKNOWN) {
-        shots_table->grid[i][j] = WATER;
+  for (int row = upper_left.row; row <= lower_right.row; row++) {
+    for (int col = upper_left.col; col <= lower_right.col; col++) {
+      if (shots_table->grid[row][col] == UNKNOWN) {
+        shots_table->grid[row][col] = WATER;
       }
     }
   }
@@ -194,18 +197,11 @@ Coord_t get_coord_from_AI(const Table_t *table) {
             while (table->grid[coord.row][coord.col] == SHIP) coord.col++;
           }
         } else {
-          int row, col;
+          Coord_t temp;
           do {
-            if (rand() % 2) {
-              row = rand() % 2 ? -1 : 1;
-              col = 0;
-            } else {
-              row = 0;
-              col = rand() % 2 ? -1 : 1;
-            }
-          } while (table->grid[coord.row + row][coord.col + col] != UNKNOWN);
-          coord.row += row;
-          coord.col += col;
+            temp = random_adjacent_coord(coord);
+          } while (!valid_coord(&temp, table->dim) || table->grid[temp.row][temp.col] != UNKNOWN);
+          return temp;
         }
         return coord;
       }
@@ -340,6 +336,11 @@ bool is_ship_horizont(const Table_t *table, const Coord_t *coord) {
 bool is_ship_vertical(const Table_t *table, const Coord_t *coord) {
   return coord->col - 1 >= 0 && table->grid[coord->row][coord->col - 1] == SHIP ||
          coord->col + 1 < table->dim && table->grid[coord->row][coord->col + 1] == SHIP;
+}
+
+Coord_t random_adjacent_coord(Coord_t coord) {
+  rand() % 2 == 0 ? (rand() % 2 == 0 ? coord.row++ : coord.row--) : (rand() % 2 == 0 ? coord.col++ : coord.col--);
+  return coord;
 }
 
 int get_score(const Player_t *player) {
