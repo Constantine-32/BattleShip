@@ -14,7 +14,12 @@
 bool load_game(Game_t *game) {
   FILE *file = fopen(GAME_FILE, "rb");
   if (file == NULL) return false;
-  fread(game, sizeof(Game_t), 1, file);
+  fread(&game->mode, sizeof(int), 1, file);
+  fread(&game->player1, sizeof(Player_t), 1, file);
+  if (game->mode == 2) {
+    fread(&game->player2, sizeof(Player_t), 1, file);
+  }
+  game->game = true;
   fclose(file);
   return true;
 }
@@ -22,7 +27,11 @@ bool load_game(Game_t *game) {
 bool save_game(const Game_t *game) {
   FILE *file = fopen(GAME_FILE, "wb");
   if (file == NULL) return false;
-  fwrite(&game, sizeof(Game_t), 1, file);
+  fwrite(&game->mode, sizeof(int), 1, file);
+  fwrite(&game->player1, sizeof(Player_t), 1, file);
+  if (game->mode == 2) {
+    fwrite(&game->player2, sizeof(Player_t), 1, file);
+  }
   fclose(file);
   return true;
 }
