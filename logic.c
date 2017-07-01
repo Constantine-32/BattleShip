@@ -14,34 +14,33 @@
 bool play_game(Game_t *game, Scores_t *scores) {
   switch (game->mode) {
     case 0:
-      return play_game_solo_AI(game, scores);
+      return play_game_solo_ai(game, scores);
     case 1:
-      return play_game_solo_Player(game, scores);
+      return play_game_solo_player(game, scores);
     case 2:
-      return play_game_Player_vs_AI(game, scores);
+      return play_game_player_vs_ai(game, scores);
     default:
       return true;
   }
 }
 
-bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
-
-  system("cls");
-  print_game(&game->player1);
-  if (!pause_exit()) return false;
+bool play_game_solo_ai(Game_t *game, Scores_t *scores) {
 
   while (game->player1.sunk_ships < TOTAL_SHIPS) {
-    game->player1.coord = get_coord_from_AI(&game->player1.shots);
+    system("cls");
+    print_game_solo_ai(&game->player1);
+    if (!pause_exit()) return false;
+
+    game->player1.coord = get_coord_from_ai(&game->player1.shots);
     game->player1.result = shoot(&game->player1.ships, &game->player1.coord);
     game->player1.shot_count++;
     game->player1.result_sum += game->player1.result - 1;
     if (game->player1.result == SUNK) game->player1.sunk_ships++;
     update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
-
-    system("cls");
-    print_game(&game->player1);
-    if (!pause_exit()) return false;
   }
+
+  system("cls");
+  print_game_solo_ai(&game->player1);
 
   game->game = false;
   remove(GAME_FILE);
@@ -63,14 +62,44 @@ bool play_game_solo_AI(Game_t *game, Scores_t *scores) {
   return true;
 }
 
-bool play_game_solo_Player(Game_t *game, Scores_t *scores) {
+bool play_game_solo_player(Game_t *game, Scores_t *scores) {
 
+  while (game->player1.sunk_ships < TOTAL_SHIPS) {
+    system("cls");
+    print_game_solo_ai(&game->player1);
 
+    if (!pause_coord(&game->player1.coord)) return false;
+    game->player1.result = shoot(&game->player1.ships, &game->player1.coord);
+    game->player1.shot_count++;
+    game->player1.result_sum += game->player1.result - 1;
+    if (game->player1.result == SUNK) game->player1.sunk_ships++;
+    update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
+  }
+
+  system("cls");
+  print_game_solo_ai(&game->player1);
+
+  game->game = false;
+  remove(GAME_FILE);
+
+  Score_t score;
+  strcpy(score.name, game->player1.name);
+  score.points = get_score(&game->player1);
+
+  printf("\n");
+  printf("  Game Over!\n");
+  printf("  Score: %d\n", score.points);
+  pause();
+
+  if (add_score(scores, &score)) {
+    save_scores(scores);
+    print_scoreboard(scores);
+  }
 
   return true;
 }
 
-bool play_game_Player_vs_AI(Game_t *game, Scores_t *scores) {
+bool play_game_player_vs_ai(Game_t *game, Scores_t *scores) {
   // TODO
   return true;
 }
@@ -178,7 +207,7 @@ void unveil_surroundings(Table_t *shots_table, const Coord_t *coord) {
   }
 }
 
-Coord_t get_coord_from_AI(const Table_t *table) {
+Coord_t get_coord_from_ai(const Table_t *table) {
   Coord_t coord;
 
   for (coord.row = 0; coord.row < table->dim; coord.row++) {

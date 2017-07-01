@@ -110,7 +110,7 @@ int init_menu() {
   return option - 1;
 }
 
-void print_game(const Player_t *player) {
+void print_game_solo_ai(const Player_t *player) {
   print_table_2(&player->ships, &player->shots);
   printf("  Ships left: %d\n", TOTAL_SHIPS - player->sunk_ships);
   if (player->shot_count > 0) {
@@ -118,6 +118,20 @@ void print_game(const Player_t *player) {
     printf("  Result: %s\n", shot_to_string(player->result));
   }
   printf("  Shots: %d\n", player->shot_count);
+}
+
+void print_game_solo_player(const Player_t *player) {
+  print_table_1(&player->shots);
+  printf("  Ships left: %d\n", TOTAL_SHIPS - player->sunk_ships);
+  if (player->shot_count > 0) {
+    printf("  Last shot: %c-%d\n", player->coord.col + 1 + 64, player->coord.row + 1);
+    printf("  Result: %s\n", shot_to_string(player->result));
+  }
+  printf("  Shots: %d\n", player->shot_count);
+}
+
+void print_game_player_vs_ai(const Player_t *player1, const Player_t *player2) {
+  // TODO
 }
 
 void print_table_1(const Table_t *table) {

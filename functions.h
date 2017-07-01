@@ -18,13 +18,16 @@ int main_menu(bool game);
 int mode_menu();
 int size_menu();
 int init_menu();
-void print_game(const Player_t *player);
+void print_game_solo_ai(const Player_t *player);
+void print_game_solo_player(const Player_t *player);
+void print_game_player_vs_ai(const Player_t *player1, const Player_t *player2);
 void print_table_1(const Table_t *table);
 void print_table_2(const Table_t *ships_table, const Table_t *shots_table);
 const char *shot_to_string(Shot_e shot);
 void print_scoreboard(const Scores_t *scores);
 void pause();
 bool pause_exit();
+bool pause_coord(Coord_t *coord);
 
 // initialization.c
 void new_game(Game_t *game);
@@ -38,15 +41,15 @@ bool valid_coord(const Coord_t *coord, int dim);
 
 // logic.c
 bool play_game(Game_t *game, Scores_t *scores);
-bool play_game_solo_AI(Game_t *game, Scores_t *scores);
-bool play_game_solo_Player(Game_t *game, Scores_t *scores);
-bool play_game_Player_vs_AI(Game_t *game, Scores_t *scores);
+bool play_game_solo_ai(Game_t *game, Scores_t *scores);
+bool play_game_solo_player(Game_t *game, Scores_t *scores);
+bool play_game_player_vs_ai(Game_t *game, Scores_t *scores);
 Shot_e shoot(Table_t *ships_table, const Coord_t *coord);
 bool is_ship_sunk(const Table_t *ships_table, const Coord_t *coord);
 bool is_water(Cell_e cell);
 void update_shots_table(Table_t *shots_table, const Coord_t *coord, Shot_e result);
 void unveil_surroundings(Table_t *shots_table, const Coord_t *coord);
-Coord_t get_coord_from_AI(const Table_t *table);
+Coord_t get_coord_from_ai(const Table_t *table);
 bool is_ship_not_sunk(const Table_t *table, const Coord_t *coord);
 bool is_ship_horizont(const Table_t *table, const Coord_t *coord);
 bool is_ship_vertical(const Table_t *table, const Coord_t *coord);
