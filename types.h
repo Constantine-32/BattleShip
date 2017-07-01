@@ -8,8 +8,8 @@
 |   File description:   Types and constants.
 | ----------------------------------------------------------------*/
 
-#ifndef BATTLESHIP_TIPUS_H
-#define BATTLESHIP_TIPUS_H
+#ifndef BATTLESHIP_TYPES_H
+#define BATTLESHIP_TYPES_H
 
 /* Standard libraries */
 #include <mem.h>
@@ -109,4 +109,4 @@ typedef struct {
   bool game;
 } Game_t;
 
-#endif //BATTLESHIP_TIPUS_H
+#endif //BATTLESHIP_TYPES_H
