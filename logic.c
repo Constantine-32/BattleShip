@@ -13,22 +13,22 @@
 
 bool play_game(Game_t *game, Scores_t *scores) {
   switch (game->mode) {
-    case 0:
-      return play_game_solo_ai(game, scores);
-    case 1:
-      return play_game_solo_player(game, scores);
-    case 2:
-      return play_game_player_vs_ai(game, scores);
-    default:
-      return true;
+  case 0:
+    return play_game_0(game, scores);
+  case 1:
+    return play_game_1(game, scores);
+  case 2:
+    return play_game_2(game, scores);
+  default:
+    return true;
   }
 }
 
-bool play_game_solo_ai(Game_t *game, Scores_t *scores) {
+bool play_game_0(Game_t *game, Scores_t *scores) {
 
   while (game->player1.sunk_ships < TOTAL_SHIPS) {
     system("cls");
-    print_game_solo_ai(&game->player1);
+    print_game_0(&game->player1);
     if (!pause_exit()) return false;
 
     game->player1.coord = get_coord_from_ai(&game->player1.shots);
@@ -40,7 +40,7 @@ bool play_game_solo_ai(Game_t *game, Scores_t *scores) {
   }
 
   system("cls");
-  print_game_solo_ai(&game->player1);
+  print_game_0(&game->player1);
 
   game->game = false;
   remove(GAME_FILE);
@@ -62,13 +62,13 @@ bool play_game_solo_ai(Game_t *game, Scores_t *scores) {
   return true;
 }
 
-bool play_game_solo_player(Game_t *game, Scores_t *scores) {
+bool play_game_1(Game_t *game, Scores_t *scores) {
 
   while (game->player1.sunk_ships < TOTAL_SHIPS) {
     system("cls");
-    print_game_solo_ai(&game->player1);
+    print_game_1(&game->player1);
 
-    if (!pause_coord(&game->player1.coord)) return false;
+    if (!pause_coord(&game->player1.coord, game->player1.ships.dim)) return false;
     game->player1.result = shoot(&game->player1.ships, &game->player1.coord);
     game->player1.shot_count++;
     game->player1.result_sum += game->player1.result - 1;
@@ -77,7 +77,7 @@ bool play_game_solo_player(Game_t *game, Scores_t *scores) {
   }
 
   system("cls");
-  print_game_solo_ai(&game->player1);
+  print_game_1(&game->player1);
 
   game->game = false;
   remove(GAME_FILE);
@@ -99,8 +99,10 @@ bool play_game_solo_player(Game_t *game, Scores_t *scores) {
   return true;
 }
 
-bool play_game_player_vs_ai(Game_t *game, Scores_t *scores) {
-  // TODO
+bool play_game_2(Game_t *game, Scores_t *scores) {
+
+  print_game_2(&game->player1, &game->player2);
+
   return true;
 }
 
