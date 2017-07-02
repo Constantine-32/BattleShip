@@ -49,14 +49,16 @@ bool is_ship_sunk(const Table_t *ships_table, const Coord_t *coord);
 bool is_water(Cell_e cell);
 void update_shots_table(Table_t *shots_table, const Coord_t *coord, Shot_e result);
 void unveil_surroundings(Table_t *shots_table, const Coord_t *coord);
+int get_score(const Player_t *player);
+bool add_score(Scores_t *scores, const Score_t *score);
+void sort_scores(Scores_t *scores);
+
+// ai.
 Coord_t get_coord_from_ai(const Table_t *table);
 bool is_ship_not_sunk(const Table_t *table, const Coord_t *coord);
 bool is_ship_horizont(const Table_t *table, const Coord_t *coord);
 bool is_ship_vertical(const Table_t *table, const Coord_t *coord);
 Coord_t random_adjacent_coord(Coord_t coord);
-int get_score(const Player_t *player);
-bool add_score(Scores_t *scores, const Score_t *score);
-void sort_scores(Scores_t *scores);
 
 // loadsave.c
 bool load_game(Game_t *game);
