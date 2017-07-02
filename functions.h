@@ -15,9 +15,9 @@
 
 // viusal.c
 int main_menu(bool game);
-int mode_menu();
-int size_menu();
-int init_menu();
+int mode_menu(void);
+int size_menu(void);
+int init_menu(void);
 void print_game_0(const Player_t *player);
 void print_game_1(const Player_t *player);
 void print_game_2(const Player_t *player1, const Player_t *player2);
@@ -25,8 +25,8 @@ void print_table_1(const Table_t *table);
 void print_table_2(const Table_t *ships_table, const Table_t *shots_table);
 const char *shot_to_string(Shot_e shot);
 void print_scoreboard(const Scores_t *scores);
-void pause();
-bool pause_exit();
+void pause(void);
+bool pause_exit(void);
 bool pause_coord(Coord_t *coord, int dim);
 
 // initialization.c

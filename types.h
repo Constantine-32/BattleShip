@@ -20,6 +20,7 @@
 #include <stdbool.h>
 
 /* Project constants */
+#define DIM_MIN         8
 #define DIM_MAX         10
 #define NAME_MAX        10
 #define SCORE_MAX       25

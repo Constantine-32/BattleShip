@@ -37,7 +37,7 @@ int main_menu(bool game) {
   return option;
 }
 
-int mode_menu() {
+int mode_menu(void) {
   bool first_iteration = true;
   int option;
   do {
@@ -54,24 +54,21 @@ int mode_menu() {
   return option - 1;
 }
 
-int size_menu() {
+int size_menu(void) {
   bool first_iteration = true;
   int option;
   do {
     fflush(stdin);
     system("cls");
-    printf("\n  Select the table size:\n\n");
-    printf("  1. 8x8\n");
-    printf("  2. 9x9\n");
-    printf("  3. 10x10\n");
-    printf(first_iteration ? "\n  Select an option: " : "\n  Invalid option, try again: ");
+    printf("\n  Select the table size (min: %d, max: %d)\n", DIM_MIN, DIM_MAX);
+    printf(first_iteration ? "\n  Size: " : "\n  Invalid size, try again: ");
     first_iteration = false;
-  } while (scanf("%d", &option) != 1 || option < 1 || option > 3);
+  } while (scanf("%d", &option) != 1 || option < DIM_MIN || option > DIM_MAX);
   fflush(stdin);
-  return option + 7;
+  return option;
 }
 
-int init_menu() {
+int init_menu(void) {
   bool first_iteration = true;
   int option;
   do {
@@ -82,7 +79,7 @@ int init_menu() {
     printf("  2. Manual\n");
     printf(first_iteration ? "\n  Select an option: " : "\n  Invalid option, try again: ");
     first_iteration = false;
-  } while (scanf("%d", &option) != 1 || option < 1 || option > 3);
+  } while (scanf("%d", &option) != 1 || option < 1 || option > 2);
   fflush(stdin);
   return option - 1;
 }
@@ -165,12 +162,12 @@ void print_scoreboard(const Scores_t *scores) {
   pause();
 }
 
-void pause() {
+void pause(void) {
   printf("\n  Press enter to continue...");
   getchar();
 }
 
-bool pause_exit() {
+bool pause_exit(void) {
   char string[6];
   printf("\n  Press enter to continue. Type 'EXIT' to exit... ");
   fgets(string, 6, stdin);
@@ -189,7 +186,7 @@ bool pause_coord(Coord_t *coord, int dim) {
     fflush(stdin);
     if (strcmp(string, "EXIT\n") == 0 || strcmp(string, "exit\n") == 0) return false;
     first_iteration = false;
-  } while (sscanf(string, "%c%d", &col, &row) != 2 || row <= 0 || row > dim || col < 'A' || col >= 'A' + dim);
+  } while (sscanf(string, "%c%d", &col, &row) != 2 || row < 1 || row > dim || col < 'A' || col >= dim + 'A');
   coord->row = row - 1;
   coord->col = col - 'A';
   return true;
