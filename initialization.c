@@ -15,15 +15,9 @@ void new_game(Game_t *game) {
   game->game = true;
   game->mode = mode_menu();
   int dim = size_menu();
-  if (game->mode == 0) {
-    new_player(dim, &game->player1, "A.I.");
-  }
-  if (game->mode == 1 || game->mode == 2) {
-    new_player(dim, &game->player1, "Player");
-  }
-  if (game->mode == 2) {
-    new_player(dim, &game->player2, "A.I.");
-  }
+  new_player(dim, &game->player1, game->mode == 0 ? "A.I." : "Player");
+  if (game->mode == 2) new_player(dim, &game->player2, "A.I.");
+  if (game->mode != 0 && init_menu() == 1) new_ships_table_manual(&game->player1.ships);
 }
 
 void new_player(int dim, Player_t *player, const char *name) {
@@ -40,25 +34,30 @@ void new_player(int dim, Player_t *player, const char *name) {
   player->result = ERROR;
 }
 
-void new_shots_table(Table_t *table) {
-  fill_table(table, UNKNOWN);
+void new_shots_table(Table_t *shots_table) {
+  fill_table(shots_table, UNKNOWN);
 }
 
-void new_ships_table(Table_t *table) {
+void new_ships_table(Table_t *ships_table) {
   int count;
   bool repeat = true;
   while (repeat) {
     repeat = false;
-    fill_table(table, WATER);
+    fill_table(ships_table, WATER);
     count = 0;
-    while (!repeat && count++ < SHIP_1_NUMB) if (!place_ship(table, SHIP_1_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_1_NUMB) if (!place_ship(ships_table, SHIP_1_SIZE)) repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_2_NUMB) if (!place_ship(table, SHIP_2_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_2_NUMB) if (!place_ship(ships_table, SHIP_2_SIZE)) repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_3_NUMB) if (!place_ship(table, SHIP_3_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_3_NUMB) if (!place_ship(ships_table, SHIP_3_SIZE)) repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_4_NUMB) if (!place_ship(table, SHIP_4_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_4_NUMB) if (!place_ship(ships_table, SHIP_4_SIZE)) repeat = true;
   }
+}
+
+void new_ships_table_manual(Table_t *ships_table) {
+  fill_table(ships_table, WATER);
+  // TODO
 }
 
 void fill_table(Table_t *table, Cell_e cell) {
@@ -69,7 +68,7 @@ void fill_table(Table_t *table, Cell_e cell) {
   }
 }
 
-bool place_ship(Table_t *table, int size) {
+bool place_ship(Table_t *ships_table, int size) {
   Ship_t ship;
   ship.size = size;
 
@@ -77,19 +76,19 @@ bool place_ship(Table_t *table, int size) {
   do {
     if (iterations++ > ITERATIONS_MAX) return false;
     ship.orientation = (rand() % 2 == 0) ? HORIZONTAL : VERTICAL;
-    ship.coord.row = rand() % (ship.orientation == HORIZONTAL ? table->dim : table->dim - (size - 1));
-    ship.coord.col = rand() % (ship.orientation == VERTICAL ? table->dim : table->dim - (size - 1));
-  } while (!ship_fits(table, &ship));
+    ship.coord.row = rand() % (ship.orientation == HORIZONTAL ? ships_table->dim : ships_table->dim - (size - 1));
+    ship.coord.col = rand() % (ship.orientation == VERTICAL ? ships_table->dim : ships_table->dim - (size - 1));
+  } while (!ship_fits(ships_table, &ship));
 
   while (size--) {
-    table->grid[ship.coord.row][ship.coord.col] = SHIP;
+    ships_table->grid[ship.coord.row][ship.coord.col] = SHIP;
     ship.orientation == HORIZONTAL ? ship.coord.col++ : ship.coord.row++;
   }
 
   return true;
 }
 
-bool ship_fits(const Table_t *table, const Ship_t *ship) {
+bool ship_fits(const Table_t *ships_table, const Ship_t *ship) {
   Coord_t stop;
   stop.row = (ship->orientation == HORIZONTAL) ? ship->coord.row + 1 : ship->coord.row + ship->size;
   stop.col = (ship->orientation == VERTICAL) ? ship->coord.col + 1 : ship->coord.col + ship->size;
@@ -98,7 +97,7 @@ bool ship_fits(const Table_t *table, const Ship_t *ship) {
   while (pivot.row <= stop.row) {
     pivot.col = ship->coord.col - 1;
     while (pivot.col <= stop.col) {
-      if (valid_coord(&pivot, table->dim) && table->grid[pivot.row][pivot.col] != WATER) {
+      if (valid_coord(&pivot, ships_table->dim) && ships_table->grid[pivot.row][pivot.col] != WATER) {
         return false;
       }
       pivot.col++;

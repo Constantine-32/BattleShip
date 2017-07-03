@@ -101,7 +101,53 @@ bool play_game_1(Game_t *game, Scores_t *scores) {
 
 bool play_game_2(Game_t *game, Scores_t *scores) {
 
+  while (game->player1.sunk_ships < TOTAL_SHIPS && game->player2.sunk_ships < TOTAL_SHIPS) {
+    system("cls");
+    print_game_2(&game->player1, &game->player2);
+
+    // Player turn.
+    if (game->player2.result != HIT && game->player2.result != SUNK) {
+      if (!pause_coord(&game->player1.coord, game->player1.ships.dim)) return false;
+      game->player1.result = shoot(&game->player2.ships, &game->player1.coord);
+      game->player1.shot_count++;
+      game->player1.result_sum += game->player1.result - 1;
+      if (game->player1.result == SUNK) game->player1.sunk_ships++;
+      update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
+    }
+
+    // A.I turn.
+    if (game->player1.result != HIT && game->player1.result != SUNK) {
+      if ((game->player2.result == HIT || game->player2.result == SUNK) && !pause_exit()) return false;
+      game->player2.coord = get_coord_from_ai(&game->player2.shots);
+      game->player2.result = shoot(&game->player1.ships, &game->player2.coord);
+      game->player2.shot_count++;
+      game->player2.result_sum += game->player2.result - 1;
+      if (game->player2.result == SUNK) game->player2.sunk_ships++;
+      update_shots_table(&game->player2.shots, &game->player2.coord, game->player2.result);
+    }
+  }
+
+  system("cls");
   print_game_2(&game->player1, &game->player2);
+
+  game->game = false;
+  remove(GAME_FILE);
+
+  bool player_won = game->player1.sunk_ships == TOTAL_SHIPS;
+
+  Score_t score;
+  strcpy(score.name, player_won ? game->player1.name : game->player2.name);
+  score.points = get_score(player_won ? &game->player1 : &game->player2);
+
+  printf("\n");
+  printf("  Game Over! %s wins!\n", score.name);
+  printf("  Score: %d\n", score.points);
+  pause();
+
+  if (add_score(scores, &score)) {
+    save_scores(scores);
+    print_scoreboard(scores);
+  }
 
   return true;
 }

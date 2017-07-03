@@ -32,11 +32,12 @@ bool pause_coord(Coord_t *coord, int dim);
 // initialization.c
 void new_game(Game_t *game);
 void new_player(int dim, Player_t *player, const char *name);
-void new_shots_table(Table_t *table);
-void new_ships_table(Table_t *table);
+void new_shots_table(Table_t *shots_table);
+void new_ships_table(Table_t *ships_table);
+void new_ships_table_manual(Table_t *ships_table);
 void fill_table(Table_t *table, Cell_e cell);
-bool place_ship(Table_t *table, int size);
-bool ship_fits(const Table_t *table, const Ship_t *ship);
+bool place_ship(Table_t *ships_table, int size);
+bool ship_fits(const Table_t *ships_table, const Ship_t *ship);
 bool valid_coord(const Coord_t *coord, int dim);
 
 // logic.c
@@ -54,10 +55,10 @@ bool add_score(Scores_t *scores, const Score_t *score);
 void sort_scores(Scores_t *scores);
 
 // ai.
-Coord_t get_coord_from_ai(const Table_t *table);
-bool is_ship_not_sunk(const Table_t *table, const Coord_t *coord);
-bool is_ship_horizont(const Table_t *table, const Coord_t *coord);
-bool is_ship_vertical(const Table_t *table, const Coord_t *coord);
+Coord_t get_coord_from_ai(const Table_t *shots_table);
+bool is_ship_not_sunk(const Table_t *shots_table, const Coord_t *coord);
+bool is_ship_horizont(const Table_t *shots_table, const Coord_t *coord);
+bool is_ship_vertical(const Table_t *shots_table, const Coord_t *coord);
 Coord_t random_adjacent_coord(Coord_t coord);
 
 // loadsave.c
