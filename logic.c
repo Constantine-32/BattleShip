@@ -48,6 +48,9 @@ bool play_game_0(Game_t *game, Scores_t *scores) {
   Score_t score;
   strcpy(score.name, game->player1.name);
   score.points = get_score(&game->player1);
+  score.turns = game->player1.shot_count;
+  score.size = game->player1.ships.dim;
+  score.mode = 0;
 
   printf("\n");
   printf("  Game Over!\n");
@@ -85,6 +88,9 @@ bool play_game_1(Game_t *game, Scores_t *scores) {
   Score_t score;
   strcpy(score.name, game->player1.name);
   score.points = get_score(&game->player1);
+  score.turns = game->player1.shot_count;
+  score.size = game->player1.ships.dim;
+  score.mode = 1;
 
   printf("\n");
   printf("  Game Over!\n");
@@ -138,6 +144,9 @@ bool play_game_2(Game_t *game, Scores_t *scores) {
   Score_t score;
   strcpy(score.name, player_won ? game->player1.name : game->player2.name);
   score.points = get_score(player_won ? &game->player1 : &game->player2);
+  score.turns = player_won ? game->player1.shot_count : game->player2.shot_count;
+  score.size = game->player1.ships.dim;
+  score.mode = 2;
 
   printf("\n");
   printf("  Game Over! %s wins!\n", score.name);

@@ -126,7 +126,7 @@ void print_game_2(const Player_t *player1, const Player_t *player2) {
 }
 
 void print_table_1(const Table_t *table) {
-  printf("\n  You can type 'EXIT' to exit the game any time.\n");
+  printf("\n  You can type 'EXIT' to exit the game at any time.\n");
   printf("\n     ");
   for (int col = 0; col < table->dim; col++) {
     printf("%c ", col + 'A');
@@ -141,7 +141,7 @@ void print_table_1(const Table_t *table) {
 }
 
 void print_table_2(const Table_t *ships_table, const Table_t *shots_table) {
-  printf("\n  You can type 'EXIT' to exit the game any time.\n");
+  printf("\n  You can type 'EXIT' to exit the game at any time.\n");
   printf("\n     ");
   for (int col = 0; col < ships_table->dim; col++) {
     printf("%c ", col + 'A');
@@ -168,7 +168,7 @@ void print_scoreboard(const Scores_t *scores) {
   system("cls");
   if (scores->num > 0) {
     printf("\n  Player\t\tPoints\n\n");
-    for (int i = 0; i < scores->num; i++) {
+    for (int i = 0; i < SCORE_SHOW_MAX; i++) {
       printf("  %2d. %s\t\t%d\n", i+1, scores->score[i].name, scores->score[i].points);
     }
   } else printf("\n  There are no scores to show.\n");

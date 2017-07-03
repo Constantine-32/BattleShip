@@ -40,7 +40,8 @@ bool load_scores(Scores_t *scores) {
   FILE *file = fopen(SCORE_FILE, "r");
   if (file == NULL) return false;
   while (!feof(file) && scores->num < SCORE_MAX) {
-    if (fscanf(file, "%s\t%d\n", scores->score[scores->num].name, &scores->score[scores->num].points) == 2) {
+    if (fscanf(file, "%s\t%d\t%d\t%d\t%d\n", scores->score[scores->num].name, &scores->score[scores->num].points,
+               &scores->score[scores->num].turns, &scores->score[scores->num].size, &scores->score[scores->num].mode) == 5) {
       scores->num++;
     }
   }
@@ -52,7 +53,8 @@ bool save_scores(const Scores_t *scores) {
   FILE *file = fopen(SCORE_FILE, "w");
   if (file == NULL) return false;
   for (int i = 0; i < scores->num; i++) {
-    fprintf(file, "%s\t%d\n", scores->score[i].name, scores->score[i].points);
+    fprintf(file, "%s\t%d\t%d\t%d\t%d\n", scores->score[i].name, scores->score[i].points,
+            scores->score[i].turns, scores->score[i].size, scores->score[i].mode);
   }
   fclose(file);
   return true;

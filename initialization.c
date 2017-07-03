@@ -17,7 +17,7 @@ void new_game(Game_t *game) {
   int dim = size_menu();
   new_player(dim, &game->player1, game->mode == 0 ? "A.I." : "Player");
   if (game->mode == 2) new_player(dim, &game->player2, "A.I.");
-  if (game->mode != 0 && init_menu() == 1) new_ships_table_manual(&game->player1.ships);
+//  if (game->mode != 0 && init_menu() == 1) new_ships_table_manual(&game->player1.ships);
 }
 
 void new_player(int dim, Player_t *player, const char *name) {

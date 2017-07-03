@@ -22,7 +22,8 @@
 /* Project constants */
 #define DIM_MAX         10
 #define NAME_MAX        10
-#define SCORE_MAX       25
+#define SCORE_MAX       500
+#define SCORE_SHOW_MAX  10
 
 #define GAME_FILE      "game.bin"
 #define SCORE_FILE     "scores.txt"
@@ -68,6 +69,9 @@ typedef char Name_t[NAME_MAX];
 typedef struct {
   Name_t name;
   int points;
+  int turns;
+  int size;
+  int mode;
 } Score_t;
 
 typedef struct {
