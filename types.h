@@ -90,6 +90,11 @@ typedef struct {
 } Table_t;
 
 typedef struct {
+  int table[DIM_MAX][DIM_MAX];
+  int highest_prob;
+} ProbTable_t;
+
+typedef struct {
   Coord_t coord;
   Orientation_e orientation;
   int size;
