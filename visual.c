@@ -168,7 +168,7 @@ void print_scoreboard(const Scores_t *scores) {
   system("cls");
   if (scores->num > 0) {
     printf("\n  Player\t\tPoints\n\n");
-    for (int i = 0; i < SCORE_SHOW_MAX; i++) {
+    for (int i = 0; i < scores->num && i < SCORE_SHOW_MAX; i++) {
       printf("  %2d. %s\t\t%d\n", i+1, scores->score[i].name, scores->score[i].points);
     }
   } else printf("\n  There are no scores to show.\n");
