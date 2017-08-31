@@ -56,18 +56,21 @@ void sort_scores(Scores_t *scores);
 
 // ai.
 Coord_t get_coord_from_ai(const Table_t *shots_table);
-ProbTable_t get_prob_table(const Table_t *shots_table);
+ProbTable_t ini_prob_table(const Table_t *shots_table);
 int get_ship_size(const Table_t *shots_table, Coord_t coord);
-bool has_any_adjacent_unknown(const Table_t *shots_table, const Coord_t *coord);
-void add_ship_prob(const Table_t *shots_table, ProbTable_t *prob_table, int ship_size);
-bool is_ship_not_sunk(const Table_t *shots_table, Coord_t *coord);
+bool has_any_adjacent(const Table_t *shots_table, const Coord_t *coord, Cell_e cell);
+bool get_undestr_ship(const Table_t *shots_table, Coord_t *coord);
+Orientation_e get_ship_orientation(const Table_t *shots_table, const Coord_t *coord);
 bool is_ship_horizont(const Table_t *shots_table, const Coord_t *coord);
 bool is_ship_vertical(const Table_t *shots_table, const Coord_t *coord);
+void get_single_prob(const Table_t *shots_table, ProbTable_t *prob_table, const Coord_t *coord, Orientation_e orientation);
+void ship_single_prob(const Table_t *shots_table, ProbTable_t *prob_table, const Ship_t *ship);
+void get_overall_prob(const Table_t *shots_table, ProbTable_t *prob_table);
+void ship_overal_prob(const Table_t *shots_table, ProbTable_t *prob_table, int ship_size);
 Coord_t random_horizont_coord(const Table_t *shots_table, const ProbTable_t *prob_table, const Coord_t *coord);
 Coord_t random_vertical_coord(const Table_t *shots_table, const ProbTable_t *prob_table, const Coord_t *coord);
 Coord_t random_adjacent_coord(const Table_t *shots_table, const ProbTable_t *prob_table, const Coord_t *coord);
 bool is_valid_coord(const Coord_t *coord, int dim);
-
 
 // loadsave.c
 bool load_game(Game_t *game);

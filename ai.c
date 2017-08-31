@@ -13,14 +13,24 @@
 
 Coord_t get_coord_from_ai(const Table_t *shots_table) {
   Coord_t coord;
-  ProbTable_t prob_table = get_prob_table(shots_table);
+  ProbTable_t prob_table = ini_prob_table(shots_table);
 
-  if (is_ship_not_sunk(shots_table, &coord)) {
-    if (is_ship_horizont(shots_table, &coord)) return random_horizont_coord(shots_table, &prob_table, &coord);
-    if (is_ship_vertical(shots_table, &coord)) return random_vertical_coord(shots_table, &prob_table, &coord);
-    return random_adjacent_coord(shots_table, &prob_table, &coord);
+  if (get_undestr_ship(shots_table, &coord)) {
+    switch (get_ship_orientation(shots_table, &coord)) {
+    case HORIZONTAL:
+      get_single_prob(shots_table, &prob_table, &coord, HORIZONTAL);
+      return random_horizont_coord(shots_table, &prob_table, &coord);
+    case VERTICAL:
+      get_single_prob(shots_table, &prob_table, &coord, VERTICAL);
+      return random_vertical_coord(shots_table, &prob_table, &coord);
+    case NONE:
+      get_single_prob(shots_table, &prob_table, &coord, HORIZONTAL);
+      get_single_prob(shots_table, &prob_table, &coord, VERTICAL);
+      return random_adjacent_coord(shots_table, &prob_table, &coord);
+    }
   }
 
+  get_overall_prob(shots_table, &prob_table);
   do {
     coord.row = rand() % shots_table->dim;
     coord.col = rand() % shots_table->dim;
@@ -30,7 +40,7 @@ Coord_t get_coord_from_ai(const Table_t *shots_table) {
   return coord;
 }
 
-ProbTable_t get_prob_table(const Table_t *shots_table) {
+ProbTable_t ini_prob_table(const Table_t *shots_table) {
   ProbTable_t prob_table;
   Coord_t coord;
 
@@ -47,36 +57,24 @@ ProbTable_t get_prob_table(const Table_t *shots_table) {
   for (coord.row = 0; coord.row < shots_table->dim; coord.row++) {
     for (coord.col = 0; coord.col < shots_table->dim; coord.col++) {
       if (shots_table->grid[coord.row][coord.col] == SHIP) {
-        int size = get_ship_size(shots_table, coord);
-        if      (size == SHIP_1_SIZE) ship_1_left--;
-        else if (size == SHIP_2_SIZE) ship_2_left--;
-        else if (size == SHIP_3_SIZE) ship_3_left--;
+        switch (get_ship_size(shots_table, coord)) {
+        case SHIP_1_SIZE: ship_1_left--; break;
+        case SHIP_2_SIZE: ship_2_left--; break;
+        case SHIP_3_SIZE: ship_3_left--; break;
+        default: break;
+        }
       }
     }
   }
-
-  if (SHIP_1_SIZE > 1 && ship_1_left > 0) add_ship_prob(shots_table, &prob_table, SHIP_1_SIZE);
-  if (SHIP_2_SIZE > 1 && ship_2_left > 0) add_ship_prob(shots_table, &prob_table, SHIP_2_SIZE);
-  if (SHIP_3_SIZE > 1 && ship_3_left > 0) add_ship_prob(shots_table, &prob_table, SHIP_3_SIZE);
 
   prob_table.highest_prob = 0;
-
-  for (coord.row = 0; coord.row < shots_table->dim; coord.row++) {
-    for (coord.col = 0; coord.col < shots_table->dim; coord.col++) {
-      if (shots_table->grid[coord.row][coord.col] == UNKNOWN &&
-          prob_table.table[coord.row][coord.col] > prob_table.highest_prob) {
-        prob_table.highest_prob = prob_table.table[coord.row][coord.col];
-      }
-    }
-  }
 
   return prob_table;
 }
 
 int get_ship_size(const Table_t *shots_table, Coord_t coord) {
   if (coord.row - 1 >= 0 && shots_table->grid[coord.row - 1][coord.col] == SHIP ||
-      coord.col - 1 >= 0 && shots_table->grid[coord.row][coord.col - 1] == SHIP ||
-      has_any_adjacent_unknown(shots_table, &coord)) {
+      coord.col - 1 >= 0 && shots_table->grid[coord.row][coord.col - 1] == SHIP || has_any_adjacent(shots_table, &coord, UNKNOWN)) {
     return -1;
   }
 
@@ -84,26 +82,119 @@ int get_ship_size(const Table_t *shots_table, Coord_t coord) {
 
   while (coord.row + 1 < shots_table->dim && shots_table->grid[coord.row + 1][coord.col] == SHIP) {
     coord.row++;
-    if (has_any_adjacent_unknown(shots_table, &coord)) return -1;
+    if (has_any_adjacent(shots_table, &coord, UNKNOWN)) return -1;
     size++;
   }
   while (coord.col + 1 < shots_table->dim && shots_table->grid[coord.row][coord.col + 1] == SHIP) {
     coord.col++;
-    if (has_any_adjacent_unknown(shots_table, &coord)) return -1;
+    if (has_any_adjacent(shots_table, &coord, UNKNOWN)) return -1;
     size++;
   }
 
   return size;
 }
 
-bool has_any_adjacent_unknown(const Table_t *shots_table, const Coord_t *coord) {
-  return coord->row - 1 >= 0 && shots_table->grid[coord->row - 1][coord->col] == UNKNOWN ||
-         coord->row + 1 < shots_table->dim && shots_table->grid[coord->row + 1][coord->col] == UNKNOWN ||
-         coord->col - 1 >= 0 && shots_table->grid[coord->row][coord->col - 1] == UNKNOWN ||
-         coord->col + 1 < shots_table->dim && shots_table->grid[coord->row][coord->col + 1] == UNKNOWN;
+bool has_any_adjacent(const Table_t *shots_table, const Coord_t *coord, Cell_e cell) {
+  return coord->row - 1 >= 0 && shots_table->grid[coord->row - 1][coord->col] == cell ||
+         coord->row + 1 < shots_table->dim && shots_table->grid[coord->row + 1][coord->col] == cell ||
+         coord->col - 1 >= 0 && shots_table->grid[coord->row][coord->col - 1] == cell ||
+         coord->col + 1 < shots_table->dim && shots_table->grid[coord->row][coord->col + 1] == cell;
 }
 
-void add_ship_prob(const Table_t *shots_table, ProbTable_t *prob_table, int ship_size) {
+bool get_undestr_ship(const Table_t *shots_table, Coord_t *coord) {
+  for (coord->row = 0; coord->row < shots_table->dim; coord->row++) {
+    for (coord->col = 0; coord->col < shots_table->dim; coord->col++) {
+      if (shots_table->grid[coord->row][coord->col] == SHIP && has_any_adjacent(shots_table, coord, UNKNOWN)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+Orientation_e get_ship_orientation(const Table_t *shots_table, const Coord_t *coord) {
+  if (is_ship_horizont(shots_table, coord)) return HORIZONTAL;
+  if (is_ship_vertical(shots_table, coord)) return VERTICAL;
+  return NONE;
+}
+
+bool is_ship_horizont(const Table_t *shots_table, const Coord_t *coord) {
+  return coord->col - 1 >= 0 && shots_table->grid[coord->row][coord->col - 1] == SHIP ||
+         coord->col + 1 < shots_table->dim && shots_table->grid[coord->row][coord->col + 1] == SHIP;
+}
+
+bool is_ship_vertical(const Table_t *shots_table, const Coord_t *coord) {
+  return coord->row - 1 >= 0 && shots_table->grid[coord->row - 1][coord->col] == SHIP ||
+         coord->row + 1 < shots_table->dim && shots_table->grid[coord->row + 1][coord->col] == SHIP;
+}
+
+void get_single_prob(const Table_t *shots_table, ProbTable_t *prob_table, const Coord_t *coord, Orientation_e orientation) {
+  Ship_t ship;
+  ship.coord = *coord;
+  ship.orientation = orientation;
+  if (prob_table->ship_1) {
+    ship.size = SHIP_1_SIZE;
+    ship_single_prob(shots_table, prob_table, &ship);
+  }
+  if (prob_table->ship_2) {
+    ship.size = SHIP_2_SIZE;
+    ship_single_prob(shots_table, prob_table, &ship);
+  }
+  if (prob_table->ship_3) {
+    ship.size = SHIP_3_SIZE;
+    ship_single_prob(shots_table, prob_table, &ship);
+  }
+}
+
+void ship_single_prob(const Table_t *shots_table, ProbTable_t *prob_table, const Ship_t *ship) {
+  int pivot = ship->orientation == HORIZONTAL ? ship->coord.col : ship->coord.row;
+  while (pivot - 1 >= 0 && shots_table->grid[ship->orientation == HORIZONTAL ? ship->coord.row : pivot - 1][ship->orientation == HORIZONTAL ? pivot - 1 : ship->coord.col] == SHIP) {
+    pivot--;
+  }
+
+  int ship_size = 1;
+  while (pivot + ship_size < shots_table->dim && shots_table->grid[ship->orientation == HORIZONTAL ? ship->coord.row : pivot + ship_size][ship->orientation == HORIZONTAL ? pivot + ship_size : ship->coord.col] == SHIP) {
+    ship_size++;
+  }
+
+  for (int i = 0; i < ship->size - ship_size + 1; i++) {
+    if (pivot >= 0 && pivot + ship->size - 1 < shots_table->dim) {
+      bool ship_fits = true;
+      for (int j = 0; j < ship->size; j++) {
+        if (shots_table->grid[ship->orientation == HORIZONTAL ? ship->coord.row : pivot + j][ship->orientation == HORIZONTAL ? pivot + j : ship->coord.col] == WATER) {
+          ship_fits = false;
+        }
+      }
+      if (ship_fits) {
+        for (int j = 0; j < ship->size; j++) {
+          prob_table->table[ship->orientation == HORIZONTAL ? ship->coord.row : pivot + j][ship->orientation == HORIZONTAL ? pivot + j : ship->coord.col]++;
+        }
+      }
+    }
+    pivot--;
+  }
+}
+
+void get_overall_prob(const Table_t *shots_table, ProbTable_t *prob_table) {
+  Coord_t coord;
+
+  if (prob_table->ship_1) ship_overal_prob(shots_table, prob_table, SHIP_1_SIZE);
+  if (prob_table->ship_2) ship_overal_prob(shots_table, prob_table, SHIP_2_SIZE);
+  if (prob_table->ship_3) ship_overal_prob(shots_table, prob_table, SHIP_3_SIZE);
+
+  prob_table->highest_prob = 0;
+
+  for (coord.row = 0; coord.row < shots_table->dim; coord.row++) {
+    for (coord.col = 0; coord.col < shots_table->dim; coord.col++) {
+      if (shots_table->grid[coord.row][coord.col] == UNKNOWN &&
+          prob_table->table[coord.row][coord.col] > prob_table->highest_prob) {
+        prob_table->highest_prob = prob_table->table[coord.row][coord.col];
+      }
+    }
+  }
+}
+
+void ship_overal_prob(const Table_t *shots_table, ProbTable_t *prob_table, int ship_size) {
   for (int row = 0; row < shots_table->dim; row++) {
     for (int col = 0; col < shots_table->dim; col++) {
       int pivot = 0;
@@ -126,27 +217,6 @@ void add_ship_prob(const Table_t *shots_table, ProbTable_t *prob_table, int ship
       }
     }
   }
-}
-
-bool is_ship_not_sunk(const Table_t *shots_table, Coord_t *coord) {
-  for (coord->row = 0; coord->row < shots_table->dim; coord->row++) {
-    for (coord->col = 0; coord->col < shots_table->dim; coord->col++) {
-      if (shots_table->grid[coord->row][coord->col] == SHIP && has_any_adjacent_unknown(shots_table, coord)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool is_ship_horizont(const Table_t *shots_table, const Coord_t *coord) {
-  return coord->col - 1 >= 0 && shots_table->grid[coord->row][coord->col - 1] == SHIP ||
-         coord->col + 1 < shots_table->dim && shots_table->grid[coord->row][coord->col + 1] == SHIP;
-}
-
-bool is_ship_vertical(const Table_t *shots_table, const Coord_t *coord) {
-  return coord->row - 1 >= 0 && shots_table->grid[coord->row - 1][coord->col] == SHIP ||
-         coord->row + 1 < shots_table->dim && shots_table->grid[coord->row + 1][coord->col] == SHIP;
 }
 
 Coord_t random_horizont_coord(const Table_t *shots_table, const ProbTable_t *prob_table, const Coord_t *coord) {

@@ -43,8 +43,9 @@
 
 /* Enums */
 typedef enum {
-  HORIZONTAL = 0,
-  VERTICAL = 1
+  HORIZONTAL,
+  VERTICAL,
+  NONE
 } Orientation_e;
 
 typedef enum {
@@ -92,6 +93,9 @@ typedef struct {
 typedef struct {
   int table[DIM_MAX][DIM_MAX];
   int highest_prob;
+  bool ship_1;
+  bool ship_2;
+  bool ship_3;
 } ProbTable_t;
 
 typedef struct {
