@@ -3,7 +3,7 @@
 |   e-mail: id.32@outlook.com
 |   Date: July 2017                 Version: 2.0
 |-----------------------------------------------------------------|
-|	Project name: BattleShip
+|	Project name: Battleship
 |	Name: visual.c
 |   File description:   Menus and data display functions.
 | ----------------------------------------------------------------*/
@@ -17,7 +17,7 @@ int main_menu(bool game) {
   do {
     fflush(stdin);
     system("cls");
-    printf("\n  BattleShip Game: Main menu\n\n");
+    printf("\n  Battleship Game: Main menu\n\n");
     printf("  1. New game\n");
     printf("  2. Load game\n");
     if (game) {

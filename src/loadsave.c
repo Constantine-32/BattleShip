@@ -3,7 +3,7 @@
 |   e-mail: id.32@outlook.com
 |   Date: July 2017                 Version: 2.0
 |-----------------------------------------------------------------|
-|	Project name: BattleShip
+|	Project name: Battleship
 |	Name: loadsave.c
 |   File description:   Storing and loading of game data.
 | ----------------------------------------------------------------*/
