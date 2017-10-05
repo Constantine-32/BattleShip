@@ -3,8 +3,8 @@
 |   e-mail: id.32@outlook.com
 |   Date: July 2017                 Version: 2.0
 |-----------------------------------------------------------------|
-|	Project name: Battleship
-|	Name: visual.c
+|   Project name: Battleship
+|   Name: visual.c
 |   File description:   Menus and data display functions.
 | ----------------------------------------------------------------*/
 

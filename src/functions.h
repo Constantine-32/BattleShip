@@ -3,8 +3,8 @@
 |   e-mail: id.32@outlook.com
 |   Date: July 2017                 Version: 2.0
 |-----------------------------------------------------------------|
-|	Project name: Battleship
-|	Name: functions.h
+|   Project name: Battleship
+|   Name: functions.h
 |   File description:   Function header.
 | ----------------------------------------------------------------*/
 
