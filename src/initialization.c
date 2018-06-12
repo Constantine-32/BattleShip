@@ -17,7 +17,8 @@ void new_game(Game_t *game) {
   int dim = size_menu();
   new_player(dim, &game->player1, game->mode == 0 ? "A.I." : "Player");
   if (game->mode == 2) new_player(dim, &game->player2, "A.I.");
-//  if (game->mode != 0 && init_menu() == 1) new_ships_table_manual(&game->player1.ships);
+//  if (game->mode != 0 && init_menu() == 1)
+//    new_ships_table_manual(&game->player1.ships);
 }
 
 void new_player(int dim, Player_t *player, const char *name) {
@@ -45,13 +46,21 @@ void new_ships_table(Table_t *ships_table) {
     repeat = false;
     fill_table(ships_table, WATER);
     count = 0;
-    while (!repeat && count++ < SHIP_1_NUMB) if (!place_ship(ships_table, SHIP_1_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_1_NUMB)
+      if (!place_ship(ships_table, SHIP_1_SIZE))
+        repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_2_NUMB) if (!place_ship(ships_table, SHIP_2_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_2_NUMB)
+      if (!place_ship(ships_table, SHIP_2_SIZE))
+        repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_3_NUMB) if (!place_ship(ships_table, SHIP_3_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_3_NUMB)
+      if (!place_ship(ships_table, SHIP_3_SIZE))
+        repeat = true;
     count = 0;
-    while (!repeat && count++ < SHIP_4_NUMB) if (!place_ship(ships_table, SHIP_4_SIZE)) repeat = true;
+    while (!repeat && count++ < SHIP_4_NUMB)
+      if (!place_ship(ships_table, SHIP_4_SIZE))
+        repeat = true;
   }
 }
 
@@ -76,8 +85,10 @@ bool place_ship(Table_t *ships_table, int size) {
   do {
     if (iterations++ > ITERATIONS_MAX) return false;
     ship.orientation = (rand() % 2 == 0) ? HORIZONTAL : VERTICAL;
-    ship.coord.row = rand() % (ship.orientation == HORIZONTAL ? ships_table->dim : ships_table->dim - (size - 1));
-    ship.coord.col = rand() % (ship.orientation == VERTICAL ? ships_table->dim : ships_table->dim - (size - 1));
+    ship.coord.row = rand() % (ship.orientation == HORIZONTAL ?
+            ships_table->dim : ships_table->dim - (size - 1));
+    ship.coord.col = rand() % (ship.orientation == VERTICAL ?
+            ships_table->dim : ships_table->dim - (size - 1));
   } while (!ship_fits(ships_table, &ship));
 
   while (size--) {
@@ -90,16 +101,18 @@ bool place_ship(Table_t *ships_table, int size) {
 
 bool ship_fits(const Table_t *ships_table, const Ship_t *ship) {
   Coord_t stop;
-  stop.row = (ship->orientation == HORIZONTAL) ? ship->coord.row + 1 : ship->coord.row + ship->size;
-  stop.col = (ship->orientation == VERTICAL) ? ship->coord.col + 1 : ship->coord.col + ship->size;
+  stop.row = (ship->orientation == HORIZONTAL) ?
+          ship->coord.row + 1 : ship->coord.row + ship->size;
+  stop.col = (ship->orientation == VERTICAL) ?
+          ship->coord.col + 1 : ship->coord.col + ship->size;
   Coord_t pivot;
   pivot.row = ship->coord.row - 1;
   while (pivot.row <= stop.row) {
     pivot.col = ship->coord.col - 1;
     while (pivot.col <= stop.col) {
-      if (valid_coord(&pivot, ships_table->dim) && ships_table->grid[pivot.row][pivot.col] != WATER) {
+      if (valid_coord(&pivot, ships_table->dim) &&
+          ships_table->grid[pivot.row][pivot.col] != WATER)
         return false;
-      }
       pivot.col++;
     }
     pivot.row++;
@@ -108,5 +121,6 @@ bool ship_fits(const Table_t *ships_table, const Ship_t *ship) {
 }
 
 bool valid_coord(const Coord_t *coord, int dim) {
-  return coord->row >= 0 && coord->row < dim && coord->col >= 0 && coord->col < dim;
+  return coord->row >= 0 && coord->row < dim &&
+         coord->col >= 0 && coord->col < dim;
 }

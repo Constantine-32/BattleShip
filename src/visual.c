@@ -29,9 +29,11 @@ int main_menu(bool game) {
       printf("  3. Scoreboard\n");
       printf("  4. Exit\n");
     }
-    printf(first_iteration ? "\n  Select an option: " : "\n  Invalid option, try again: ");
+    printf(first_iteration ?
+           "\n  Select an option: " : "\n  Invalid option, try again: ");
     first_iteration = false;
-  } while (scanf("%d", &option) != 1 || option < 1 || (game && option > 6) || (!game && option > 4));
+  } while (scanf("%d", &option) != 1 || option < 1 ||
+           (game && option > 6) || (!game && option > 4));
   fflush(stdin);
   if (!game && option > 2) option += 2;
   return option;
@@ -47,7 +49,8 @@ int mode_menu(void) {
     printf("  1. AI solo\n");
     printf("  2. Player solo\n");
     printf("  3. Player vs AI\n");
-    printf(first_iteration ? "\n  Select an option: " : "\n  Invalid option, try again: ");
+    printf(first_iteration ?
+           "\n  Select an option: " : "\n  Invalid option, try again: ");
     first_iteration = false;
   } while (scanf("%d", &option) != 1 || option < 1 || option > 3);
   fflush(stdin);
@@ -64,7 +67,8 @@ int size_menu(void) {
     printf("  1. 8x8\n");
     printf("  2. 9x9\n");
     printf("  3. 10x10\n");
-    printf(first_iteration ? "\n  Select an option: " : "\n  Invalid option, try again: ");
+    printf(first_iteration ?
+           "\n  Select an option: " : "\n  Invalid option, try again: ");
     first_iteration = false;
   } while (scanf("%d", &option) != 1 || option < 1 || option > 3);
   fflush(stdin);
@@ -80,7 +84,8 @@ int init_menu(void) {
     printf("\n  How do you want to initialize your ships table?:\n\n");
     printf("  1. Automatic\n");
     printf("  2. Manual\n");
-    printf(first_iteration ? "\n  Select an option: " : "\n  Invalid option, try again: ");
+    printf(first_iteration ?
+           "\n  Select an option: " : "\n  Invalid option, try again: ");
     first_iteration = false;
   } while (scanf("%d", &option) != 1 || option < 1 || option > 2);
   fflush(stdin);
@@ -91,7 +96,8 @@ void print_game_0(const Player_t *player) {
   print_table_2(&player->ships, &player->shots);
   if (player->shot_count > 0) {
     printf("\n");
-    printf("  A.I. last shot: %c-%d\n", player->coord.col + 'A', player->coord.row + 1);
+    printf("  A.I. last shot: %c-%d\n", player->coord.col + 'A',
+           player->coord.row + 1);
     printf("  Result: %s\n", shot_to_string(player->result));
     printf("  Shots: %d\n", player->shot_count);
     printf("  Ships left: %d\n", TOTAL_SHIPS - player->sunk_ships);
@@ -102,7 +108,8 @@ void print_game_1(const Player_t *player) {
   print_table_1(&player->shots);
   if (player->shot_count > 0) {
     printf("\n");
-    printf("  Your last shot: %c-%d\n", player->coord.col + 'A', player->coord.row + 1);
+    printf("  Your last shot: %c-%d\n", player->coord.col + 'A',
+           player->coord.row + 1);
     printf("  Result: %s\n", shot_to_string(player->result));
     printf("  Shots: %d\n", player->shot_count);
     printf("  Ships left: %d\n", TOTAL_SHIPS - player->sunk_ships);
@@ -113,12 +120,14 @@ void print_game_2(const Player_t *player1, const Player_t *player2) {
   print_table_2(&player1->ships, &player1->shots);
   if (player1->shot_count > 0) {
     printf("\n");
-    printf("  Your last shot: %c-%d\n", player1->coord.col + 'A', player1->coord.row + 1);
+    printf("  Your last shot: %c-%d\n", player1->coord.col + 'A',
+           player1->coord.row + 1);
     printf("  Result: %s\n", shot_to_string(player1->result));
     printf("  Shots: %d\n", player1->shot_count);
     printf("  Ships left: %d\n", TOTAL_SHIPS - player2->sunk_ships);
     printf("\n");
-    printf("  A.I. last shot: %c-%d\n", player2->coord.col + 'A', player2->coord.row + 1);
+    printf("  A.I. last shot: %c-%d\n", player2->coord.col + 'A',
+           player2->coord.row + 1);
     printf("  Result: %s\n", shot_to_string(player2->result));
     printf("  Shots: %d\n", player2->shot_count);
     printf("  Ships left: %d\n", TOTAL_SHIPS - player1->sunk_ships);
@@ -128,14 +137,12 @@ void print_game_2(const Player_t *player1, const Player_t *player2) {
 void print_table_1(const Table_t *table) {
   printf("\n  You can type 'EXIT' to exit the game at any time.\n");
   printf("\n     ");
-  for (int col = 0; col < table->dim; col++) {
+  for (int col = 0; col < table->dim; col++)
     printf("%c ", col + 'A');
-  }
   for (int row = 0; row < table->dim; row++) {
     printf("\n  %2d ", row + 1);
-    for (int col = 0; col < table->dim; col++) {
+    for (int col = 0; col < table->dim; col++)
       printf("%c ", table->grid[row][col]);
-    }
   }
   printf("\n");
 }
@@ -143,23 +150,19 @@ void print_table_1(const Table_t *table) {
 void print_table_2(const Table_t *ships_table, const Table_t *shots_table) {
   printf("\n  You can type 'EXIT' to exit the game at any time.\n");
   printf("\n     ");
-  for (int col = 0; col < ships_table->dim; col++) {
+  for (int col = 0; col < ships_table->dim; col++)
     printf("%c ", col + 'A');
-  }
   printf(" \t   ");
-  for (int col = 0; col < shots_table->dim; col++) {
+  for (int col = 0; col < shots_table->dim; col++)
     printf("%c ", col + 'A');
-  }
   for (int row = 0; row < ships_table->dim; row++) {
     printf("\n  %2d ", row + 1);
-    for (int col = 0; col < ships_table->dim; col++) {
+    for (int col = 0; col < ships_table->dim; col++)
       printf("%c ", ships_table->grid[row][col]);
-    }
     printf(" \t");
     printf("%2d ", row + 1);
-    for (int col = 0; col < shots_table->dim; col++) {
+    for (int col = 0; col < shots_table->dim; col++)
       printf("%c ", shots_table->grid[row][col]);
-    }
   }
   printf("\n");
 }
@@ -168,9 +171,9 @@ void print_scoreboard(const Scores_t *scores) {
   system("cls");
   if (scores->num > 0) {
     printf("\n  Player\t\tPoints\n\n");
-    for (int i = 0; i < scores->num && i < SCORE_SHOW_MAX; i++) {
-      printf("  %2d. %s\t\t%d\n", i+1, scores->score[i].name, scores->score[i].points);
-    }
+    for (int i = 0; i < scores->num && i < SCORE_SHOW_MAX; i++)
+      printf("  %2d. %s\t\t%d\n", i+1, scores->score[i].name,
+             scores->score[i].points);
   } else printf("\n  There are no scores to show.\n");
   pause();
 }
@@ -194,12 +197,18 @@ bool pause_coord(Coord_t *coord, int dim) {
   int row;
   char col;
   do {
-    printf(first_iteration ? "\n  Your turn. Type the coords [A-%c][1-%d]: " : "  Invalid coord, try again: ", dim + 64, dim );
+    printf(first_iteration ?
+           "\n  Your turn. Type the coords [A-%c][1-%d]: " :
+           "  Invalid coord, try again: ",
+           dim + 64, dim );
     fgets(string, 10, stdin);
     fflush(stdin);
-    if (strcmp(string, "EXIT\n") == 0 || strcmp(string, "exit\n") == 0) return false;
+    if (strcmp(string, "EXIT\n") == 0 || strcmp(string, "exit\n") == 0)
+      return false;
     first_iteration = false;
-  } while (sscanf(string, "%c%d", &col, &row) != 2 || row < 1 || row > dim || col < 'A' || col >= dim + 'A');
+  } while (sscanf(string, "%c%d", &col, &row) != 2 ||
+           row < 1 || row > dim ||
+           col < 'A' || col >= dim + 'A');
   coord->row = row - 1;
   coord->col = col - 'A';
   return true;

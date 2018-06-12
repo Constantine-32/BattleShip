@@ -29,9 +29,8 @@ bool save_game(const Game_t *game) {
   if (file == NULL) return false;
   fwrite(&game->mode, sizeof(int), 1, file);
   fwrite(&game->player1, sizeof(Player_t), 1, file);
-  if (game->mode == 2) {
+  if (game->mode == 2)
     fwrite(&game->player2, sizeof(Player_t), 1, file);
-  }
   fclose(file);
   return true;
 }
@@ -39,12 +38,14 @@ bool save_game(const Game_t *game) {
 bool load_scores(Scores_t *scores) {
   FILE *file = fopen(SCORE_FILE, "r");
   if (file == NULL) return false;
-  while (!feof(file) && scores->num < SCORE_MAX) {
-    if (fscanf(file, "%s\t%d\t%d\t%d\t%d\n", scores->score[scores->num].name, &scores->score[scores->num].points,
-               &scores->score[scores->num].turns, &scores->score[scores->num].size, &scores->score[scores->num].mode) == 5) {
+  while (!feof(file) && scores->num < SCORE_MAX)
+    if (fscanf(file, "%s\t%d\t%d\t%d\t%d\n",
+               scores->score[scores->num].name,
+               &scores->score[scores->num].points,
+               &scores->score[scores->num].turns,
+               &scores->score[scores->num].size,
+               &scores->score[scores->num].mode) == 5)
       scores->num++;
-    }
-  }
   fclose(file);
   return true;
 }
@@ -52,10 +53,13 @@ bool load_scores(Scores_t *scores) {
 bool save_scores(const Scores_t *scores) {
   FILE *file = fopen(SCORE_FILE, "w");
   if (file == NULL) return false;
-  for (int i = 0; i < scores->num; i++) {
-    fprintf(file, "%s\t%d\t%d\t%d\t%d\n", scores->score[i].name, scores->score[i].points,
-            scores->score[i].turns, scores->score[i].size, scores->score[i].mode);
-  }
+  for (int i = 0; i < scores->num; i++)
+    fprintf(file, "%s\t%d\t%d\t%d\t%d\n",
+            scores->score[i].name,
+            scores->score[i].points,
+            scores->score[i].turns,
+            scores->score[i].size,
+            scores->score[i].mode);
   fclose(file);
   return true;
 }

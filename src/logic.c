@@ -36,7 +36,8 @@ bool play_game_0(Game_t *game, Scores_t *scores) {
     game->player1.shot_count++;
     game->player1.result_sum += game->player1.result - 1;
     if (game->player1.result == SUNK) game->player1.sunk_ships++;
-    update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
+    update_shots_table(&game->player1.shots, &game->player1.coord,
+                       game->player1.result);
   }
 
   system("cls");
@@ -71,12 +72,14 @@ bool play_game_1(Game_t *game, Scores_t *scores) {
     system("cls");
     print_game_1(&game->player1);
 
-    if (!pause_coord(&game->player1.coord, game->player1.ships.dim)) return false;
+    if (!pause_coord(&game->player1.coord, game->player1.ships.dim))
+      return false;
     game->player1.result = shoot(&game->player1.ships, &game->player1.coord);
     game->player1.shot_count++;
     game->player1.result_sum += game->player1.result - 1;
     if (game->player1.result == SUNK) game->player1.sunk_ships++;
-    update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
+    update_shots_table(&game->player1.shots, &game->player1.coord,
+                       game->player1.result);
   }
 
   system("cls");
@@ -107,29 +110,34 @@ bool play_game_1(Game_t *game, Scores_t *scores) {
 
 bool play_game_2(Game_t *game, Scores_t *scores) {
 
-  while (game->player1.sunk_ships < TOTAL_SHIPS && game->player2.sunk_ships < TOTAL_SHIPS) {
+  while (game->player1.sunk_ships < TOTAL_SHIPS &&
+         game->player2.sunk_ships < TOTAL_SHIPS) {
     system("cls");
     print_game_2(&game->player1, &game->player2);
 
     // Player turn.
     if (game->player2.result != HIT && game->player2.result != SUNK) {
-      if (!pause_coord(&game->player1.coord, game->player1.ships.dim)) return false;
+      if (!pause_coord(&game->player1.coord, game->player1.ships.dim))
+        return false;
       game->player1.result = shoot(&game->player2.ships, &game->player1.coord);
       game->player1.shot_count++;
       game->player1.result_sum += game->player1.result - 1;
       if (game->player1.result == SUNK) game->player1.sunk_ships++;
-      update_shots_table(&game->player1.shots, &game->player1.coord, game->player1.result);
+      update_shots_table(&game->player1.shots, &game->player1.coord,
+                         game->player1.result);
     }
 
     // A.I turn.
     if (game->player1.result != HIT && game->player1.result != SUNK) {
-      if ((game->player2.result == HIT || game->player2.result == SUNK) && !pause_exit()) return false;
+      if ((game->player2.result == HIT || game->player2.result == SUNK)
+          && !pause_exit()) return false;
       game->player2.coord = get_coord_from_ai(&game->player2.shots);
       game->player2.result = shoot(&game->player1.ships, &game->player2.coord);
       game->player2.shot_count++;
       game->player2.result_sum += game->player2.result - 1;
       if (game->player2.result == SUNK) game->player2.sunk_ships++;
-      update_shots_table(&game->player2.shots, &game->player2.coord, game->player2.result);
+      update_shots_table(&game->player2.shots, &game->player2.coord,
+                         game->player2.result);
     }
   }
 
@@ -179,22 +187,26 @@ Shot_e shoot(Table_t *ships_table, const Coord_t *coord) {
 
 bool is_ship_sunk(const Table_t *ships_table, const Coord_t *coord) {
   int add = -1;
-  while (coord->row + add >= 0 && !is_water(ships_table->grid[coord->row + add][coord->col])) {
+  while (coord->row + add >= 0 &&
+         !is_water(ships_table->grid[coord->row + add][coord->col])) {
     if (ships_table->grid[coord->row + add][coord->col] == SHIP) return false;
     add--;
   }
   add = -1;
-  while (coord->col + add >= 0 && !is_water(ships_table->grid[coord->row][coord->col + add])) {
+  while (coord->col + add >= 0 &&
+         !is_water(ships_table->grid[coord->row][coord->col + add])) {
     if (ships_table->grid[coord->row][coord->col + add] == SHIP) return false;
     add--;
   }
   add = 1;
-  while (coord->row + add < ships_table->dim && !is_water(ships_table->grid[coord->row + add ][coord->col])) {
+  while (coord->row + add < ships_table->dim &&
+         !is_water(ships_table->grid[coord->row + add ][coord->col])) {
     if (ships_table->grid[coord->row + add][coord->col] == SHIP) return false;
     add++;
   }
   add = 1;
-  while (coord->col + add < ships_table->dim && !is_water(ships_table->grid[coord->row][coord->col + add ])) {
+  while (coord->col + add < ships_table->dim &&
+         !is_water(ships_table->grid[coord->row][coord->col + add ])) {
     if (ships_table->grid[coord->row][coord->col + add] == SHIP) return false;
     add++;
   }
@@ -205,7 +217,8 @@ bool is_water(Cell_e cell) {
   return cell == WATER || cell == WATER_HIT;
 }
 
-void update_shots_table(Table_t *shots_table, const Coord_t *coord, Shot_e result) {
+void update_shots_table(Table_t *shots_table, const Coord_t *coord,
+                        Shot_e result) {
   switch (result) {
   case MISS:
     shots_table->grid[coord->row][coord->col] = WATER;
@@ -229,48 +242,50 @@ void unveil_surroundings(Table_t *shots_table, const Coord_t *coord) {
   upper_left.row = lower_right.row = coord->row;
   upper_left.col = lower_right.col = coord->col;
 
-  while (upper_left.row - 1 >= 0 && shots_table->grid[upper_left.row - 1][upper_left.col] == SHIP) {
+  while (upper_left.row - 1 >= 0 &&
+         shots_table->grid[upper_left.row - 1][upper_left.col] == SHIP)
     upper_left.row--;
-  }
-  while (upper_left.col - 1 >= 0 && shots_table->grid[upper_left.row][upper_left.col - 1] == SHIP) {
+
+  while (upper_left.col - 1 >= 0 &&
+         shots_table->grid[upper_left.row][upper_left.col - 1] == SHIP)
     upper_left.col--;
-  }
-  if (upper_left.row - 1 >= 0) {
+
+  if (upper_left.row - 1 >= 0)
     upper_left.row--;
-  }
-  if (upper_left.col - 1 >= 0) {
+
+  if (upper_left.col - 1 >= 0)
     upper_left.col--;
-  }
 
-  while (lower_right.row + 1 < shots_table->dim && shots_table->grid[lower_right.row + 1][lower_right.col] == SHIP) {
+  while (lower_right.row + 1 < shots_table->dim &&
+         shots_table->grid[lower_right.row + 1][lower_right.col] == SHIP)
     lower_right.row++;
-  }
-  while (lower_right.col + 1 < shots_table->dim && shots_table->grid[lower_right.row][lower_right.col + 1] == SHIP) {
-    lower_right.col++;
-  }
-  if (lower_right.row + 1 < shots_table->dim) {
-    lower_right.row++;
-  }
-  if (lower_right.col + 1 < shots_table->dim) {
-    lower_right.col++;
-  }
 
-  for (int row = upper_left.row; row <= lower_right.row; row++) {
-    for (int col = upper_left.col; col <= lower_right.col; col++) {
-      if (shots_table->grid[row][col] == UNKNOWN) {
+  while (lower_right.col + 1 < shots_table->dim &&
+         shots_table->grid[lower_right.row][lower_right.col + 1] == SHIP)
+    lower_right.col++;
+
+  if (lower_right.row + 1 < shots_table->dim)
+    lower_right.row++;
+
+  if (lower_right.col + 1 < shots_table->dim)
+    lower_right.col++;
+
+  for (int row = upper_left.row; row <= lower_right.row; row++)
+    for (int col = upper_left.col; col <= lower_right.col; col++)
+      if (shots_table->grid[row][col] == UNKNOWN)
         shots_table->grid[row][col] = WATER;
-      }
-    }
-  }
 }
 
 int get_score(const Player_t *player) {
-  return (int) ((float) player->ships.dim / player->shot_count * player->result_sum * 100);
+  return (int) ((float) player->ships.dim / player->shot_count
+                * player->result_sum * 100);
 }
 
 bool add_score(Scores_t *scores, const Score_t *score) {
-  if (scores->num < SCORE_MAX || score->points > scores->score[scores->num - 1].points) {
-    scores->score[scores->num < SCORE_MAX ? scores->num++ : scores->num - 1] = *score;
+  if (scores->num < SCORE_MAX ||
+      score->points > scores->score[scores->num - 1].points) {
+    scores->score[scores->num < SCORE_MAX ?
+                  scores->num++ : scores->num - 1] = *score;
     sort_scores(scores);
     return true;
   } else return false;
